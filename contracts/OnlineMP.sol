@@ -26,10 +26,11 @@ contract OnlineMarketPlace {
       uint public storeBal;
       address payable storeOwner;
       uint[] products;
-      mapping (address => uint) shoppers;
+      // mapping (address => uint) shoppers;
     }
 
     Store stores;
+
     /*
         @notice A product:
         Product id: @prodId
@@ -111,21 +112,31 @@ contract OnlineMarketPlace {
         Set the owner to the creator of the contract.
         Set the appropriate myEvent details.
     */
-    constructor (string memory _description, uint _totalTickets)
+    constructor ()
       public
     {
       mpAdmins[0] = msg.sender;
-      storeOwners.description = _description;
-      myEvent.totalTickets = _totalTickets;
-      myEvent.isOpen = true;
+    }
+
+    // Add store OWNER
+    function addStoreOwners(uint _idOfStore, address _storeOwnerAddress)
+      public
+      isAdmin()
+      returns(bool added)
+    {   // need to put an if condition and return false if fails
+        stores.storeId = _idOfStore;
+        stores.storeOwner = _storeOwnerAddress;
+        return true;
     }
 
     // sell a product
-    function sellProduct(string pname, string pdesc, uint price)
+    function sellProduct(uint storesId, string pname, string pdesc, uint price)
       payable
       public
     {
-        prodCounter++;
+      stores.storeId = storesId;
+
+
     }
 
     // buy a products
@@ -137,10 +148,17 @@ contract OnlineMarketPlace {
         prodCounter > 0,
         "Verify there are products available"
       );
-
       // require buyer is not store owner or admin
       require(
-        isAdmin[msg.sender] != true;
+        isAdmin[msg.sender] != true &&  stores.storeOwner[msg.sender] == 0x0;
+        "Verify not an admin and not a store owner"
+      );
+      prodCounter++
+    }
+
+    function addStore(string _storename, )
+
+
 
 
         )
