@@ -1,5 +1,5 @@
-var OnlineMP = artifacts.require("./OnlineMP.sol");
+const OnlineMP = artifacts.require("OnlineMP");
 
-module.exports = function (deployer) {
+module.exports = function(deployer) {
   deployer.deploy(OnlineMP);
 };

@@ -7,10 +7,11 @@ pragma solidity >=0.5.0;
     /*
         Simple OnlineMarketPlace that operates on the blockchain.
     */
-contract OnlineMarketPlace {
+contract OnlineMP {
     // state variables
     address[] public mpAdmins;
-    address[] payable public storeOwners;
+    address[] public storeOwners;
+    address public buyer;
     mapping (address => bool) public isAdmin;
     uint DEFAULT_PRICE = 100 wei;
 
@@ -23,13 +24,14 @@ contract OnlineMarketPlace {
     struct Store {
       uint storeId;
       string storeName;
-      uint public storeBal;
-      address payable storeOwner;
-      uint[] products;
+      uint storeBal;
+      address storeOwner;
+      uint[] storeProducts;
       // mapping (address => uint) shoppers;
     }
 
-    Store stores;
+    mapping (uint => Store) public stores;
+    uint storeCounter;
 
     /*
         @notice A product:
@@ -53,39 +55,39 @@ contract OnlineMarketPlace {
         LogAddStore should provide infromation about the store ID and store name
     */
     event LogAddStore(
-      uint _logAstoresId;
-      string _logAstoresName;
-    )
+      uint _logAstoresId,
+      string _logAstoresName
+    );
 
     /*
         LogBuyTickets should provide information about the purchaser and the number of tickets purchased.
         LogAddProduct should provide infromation about the product ID  and product name
     */
     event LogAddProduct(
-      uint _logAproductId;
-      string _logAproductName;
-    )
+      uint _logAproductId,
+      string _logAproductName
+    );
 
     /*
         LogSellProduct should provide information about the product ID and product name
     */
     event LogSellProduct(
-      uint _logSprodId;
-      string _logSproductName;
-    )
+      uint _logSprodId,
+      string _logSproductName
+    );
 
     /*
         LogBuyTickets should provide information about the purchaser and the # of prodcuts purchased.
     */
     event LogBuyProduct(
-      address _purchaser;
+      address _purchaser,
       uint _products
-      )
+    );
 
 
     /*
         Create a modifier that throws an error if the msg.sender is not the owner.
-    */
+
     modifier isOwner() {
       require(
         msg.sender == owner,
@@ -93,11 +95,12 @@ contract OnlineMarketPlace {
       );
       _;
     }
+    */
 
     /*
         Create a modifier that throws an error if the msg.sender is not the owner.
     */
-    modifier isAdmin() {
+    modifier isAddressAdmin() {
       require(
         isAdmin[msg.sender] == true,
         "Only an Admin can call this function."
@@ -115,13 +118,13 @@ contract OnlineMarketPlace {
     constructor ()
       public
     {
-      mpAdmins[0] = msg.sender;
+      //mpAdmins[0] = msg.sender;
     }
 
     // Add store OWNER
     function addStoreOwners(uint _idOfStore, address _storeOwnerAddress)
       public
-      isAdmin()
+      isAddressAdmin()
       returns(bool added)
     {   // need to put an if condition and return false if fails
         stores.storeId = _idOfStore;
@@ -129,43 +132,45 @@ contract OnlineMarketPlace {
         return true;
     }
 
+    // get a product
+    function getProduct()
+      public
+      view
+      returns(
+        uint _prodId,
+        string _prodName,
+        string _prodDescription,
+        uint _prodPrice
+      )
+    {
+      return(prodId, prodName, prodDescription, prodPrice);
+    }
+
     // sell a product
-    function sellProduct(uint storesId, string pname, string pdesc, uint price)
-      payable
+    function sellProduct(uint _pId, string _pname, string _pdesc  uint _pprice)
+      // payable
       public
     {
-      stores.storeId = storesId;
-
+      stores.storeProducts[] = _pname;
+      stores.storeBal -= _pprice;
 
     }
 
     // buy a products
-    function buyProduct(uint id)
+    function buyProduct()
       public
     {
       // check if products are available
+
       require(
         prodCounter > 0,
         "Verify there are products available"
       );
       // require buyer is not store owner or admin
-      require(
-        isAdmin[msg.sender] != true &&  stores.storeOwner[msg.sender] == 0x0;
-        "Verify not an admin and not a store owner"
-      );
-      prodCounter++
+      prodCounter++;
     }
 
-    function addStore(string _storename, )
-
-
-
-
-        )
-
-    }
-
-
+    //function addStore(string _storename)
 
     /*
     centralMarketStores -- managed by admins who can add stores
@@ -175,6 +180,8 @@ contract OnlineMarketPlace {
       inventory funds
       goods
     shoppers can purchase goods in stock from store storeOwners
+
+
     */
 
     /*
