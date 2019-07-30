@@ -44,7 +44,7 @@ contract OnlineMP {
       uint prodId;
       string prodName;
       string prodDescription;
-      uint prodPrice;
+      uint256 prodPrice;
     }
 
     //  more state variables
@@ -127,9 +127,21 @@ contract OnlineMP {
       isAddressAdmin()
       returns(bool added)
     {   // need to put an if condition and return false if fails
-        stores.storeId = _idOfStore;
-        stores.storeOwner = _storeOwnerAddress;
+        stores[_idOfStore].storeOwner = _storeOwnerAddress;
         return true;
+    }
+
+    // add a product
+    function addProduct(string memory _pname, string memory _pdesc, uint256 _pprice)
+      public
+    {
+      prodCounter++;
+      products[prodCounter] = Product(
+        prodCounter,
+        _pname,
+        _pdesc,
+        _pprice
+      );
     }
 
     // get a product
@@ -138,22 +150,26 @@ contract OnlineMP {
       view
       returns(
         uint _prodId,
-        string _prodName,
-        string _prodDescription,
+        string memory _prodName,
+        string memory _prodDescription,
         uint _prodPrice
       )
     {
-      return(prodId, prodName, prodDescription, prodPrice);
+      return(_prodId, _prodName, _prodDescription, _prodPrice);
     }
 
     // sell a product
-    function sellProduct(uint _pId, string _pname, string _pdesc  uint _pprice)
+    function sellProduct(uint _spID, string memory _spname, string memory _spdesc, uint256 _sprice)
       // payable
       public
     {
-      stores.storeProducts[] = _pname;
-      stores.storeBal -= _pprice;
-
+      products[_spID] = Product(
+        _spID,
+        _spname,
+        _spdesc,
+        _sprice
+      );
+      emit LogSellProduct(_spID, _spname);
     }
 
     // buy a products
