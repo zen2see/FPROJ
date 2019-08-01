@@ -6,18 +6,18 @@ App = {
 
   init: function() {
     // load storesRow'
-    /*
+
     var storesRow = $('#storesRow');
     var storesTemplate = $('#storesTemplate');
 
-    storesTemplate.find('.panel-title').text('Store 1');
-    storesTemplate.find('.store-id').text('Store Id');
+    storesTemplate.find('.panel-title').text('Store Name 1');
+    storesTemplate.find('.store-id').text('StoreId');
     storesTemplate.find('.store-name').text('Store Name');
-    storesTemplate.find('.store-balance').text("0.0");
-    storesTemplate.find('.store-owner').text("0x01234567890123456789012345678901");
-
+    storesTemplate.find('.store-balance').text('0.0');
+    storesTemplate.find('.store-owner').text('0x01234567890123456789012345678901');
+    storesTemplate.find('.store-products').text('Store Product 1');
     storesRow.append(storesTemplate.html());
-    */
+
     return App.initWeb3();
   },
 
@@ -74,25 +74,25 @@ App = {
     // refresh account information
     App.displayAccountInfo();
     // retrieve the stores placeholder and clear it
-    $('#storesRow').empty();
+    //$('#storesRow').empty();
 
     App.contracts.OnlineMP.deployed().then(function(instance) {
       return instance.getStore();
     }).then(function(stores) {
       // logic to check if store exists
       // retrieve the store template and fill it
-      var storesTemplate = $('#storesTemplate');
-      storesTemplate.find('.panel-title').text(stores[storeId].storeId);
-      storesTemplate.find('.store-id').text(stores[storeId].storeId);
-      storesTemplate.find('.store-name').text(stores[storeId].storeId);
+      //var storesTemplate = $('#storesTemplate');
+      //storesTemplate.find('.panel-title').text(stores[storeId].storeId);
+      //storesTemplate.find('.store-id').text(stores[storeId].storeId);
+      //storesTemplate.find('.store-name').text(stores[storeId].storeId);
       //storesTemplate.find('.store-balance').text(web3.fromWei(stores[storeId].storeBal, "ether"));
-      storesTemplate.find('.store-balance').text(web3.fromWei(stores[storeId].storeId.storeBal, "ether"));
-      storesTemplate.find('.store-owner').text(storeOwner);
+      //storesTemplate.find('.store-balance').text(web3.fromWei(stores[storeId].storeId.storeBal, "ether"));
+      //storesTemplate.find('.store-owner').text(storeOwner);
 
-      var storeOwner = msg.sender;
+      //var storeOwner = msg.sender;
 
       // add this article
-      $('#storesRow').append(storesTemplate.html());
+      //$('#storesRow').append(storesTemplate.html());
     }).catch(function(err) {
       console.error(err.message);
     });

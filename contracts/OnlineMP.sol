@@ -9,6 +9,8 @@ import "./Ownable.sol";
     */
 contract OnlineMP is Ownable {
     // state variables
+    address storeOwner;
+    address buyer;
     mapping (address => bool) public isStoreOwners;
 
     /*
@@ -16,15 +18,15 @@ contract OnlineMP is Ownable {
         Store id: @storeId
         Store name: @storeName
         Store balance: @storeBal
-        Store owner: @storeOwners
+        Store owner: @storeOwnedBy
         Store products: @products
     */
     struct Store {
       uint storeId;
       string storeName;
       uint256 storeBal;
-      address storeOwners;
-      uint256[] products;
+      address storeOwnedBy;
+      bytes32[8] products;
     }
 
     /*
@@ -39,16 +41,12 @@ contract OnlineMP is Ownable {
         Product name: @prodName
         Product desc: @prodDescription
         Product price: @prodPrice
-        Product storeOwner: @storeOwner
-        Product buyer: @buyer
     */
     struct Product {
       uint prodId;
       string prodName;
       string prodDescription;
       uint256 prodPrice;
-      address storeOwner;
-      address buyer;
     }
 
     /*
@@ -112,8 +110,7 @@ contract OnlineMP is Ownable {
     constructor ()
       public
     {
-      addStore(0, "Default Store", 10);
-      getStore();
+
     }
 
     /**
@@ -123,37 +120,42 @@ contract OnlineMP is Ownable {
 
     }
 
+    /*
+        This function adds values for:
+          storeId
+          storeName
+          storeOwner
+    */
+    function addStore(string memory _storeName, address _storeOwnedBy)
+      public
+      returns(
+        uint storeId,
+        string memory storeName,
+        address storeOwnedBy
+      )
+    {
+        storeCounter++;
+        return(storeCounter, _storeName, _storeOwnedBy);
+    }
 
+    /*
+        This function retrieves values for:
+          storeId
+          storeName
+          storeBBal
+          storeOwner
+    */
     function getStore()
       public
-      view
+      pure
       returns(
         uint _storeId,
         string memory _storeName,
-        uint _storeBal
-        //address _storeOwner,
-        //uint[] memory _storeProd
+        uint _storeBal,
+        address _storeOwner,
+        bytes32[] memory _products
       )
     {
-      return(
-        stores[storeCounter].storeId,
-        stores[storeCounter].storeName,
-        stores[storeCounter].storeBal
-        //stores[storeCounter].storeOwner,
-        //stores[storeCounter].storeProduct
-      );
+        return(_storeId, _storeName, _storeBal, _storeOwner, _products);
     }
-
-
-    function addStore(uint astoriID, string memory _aStoreName, uint256 _stoBal)
-      public
-      returns( bool success)
-    {
-      storeCounter++;
-      stores[storeCounter].storeId = astoriID;
-      stores[storeCounter].storeName = _aStoreName;
-      stores[storeCounter].storeBal = _stoBal;
-      //stores[storeCounter].storeProduct
-    }
-    return (true);
 }
