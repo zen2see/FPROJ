@@ -1,0 +1,6 @@
+﻿truffle migrate –reset –network ganache
+truffle console –network ganache
+    OnlineMP.address
+    web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]), “ether”).toNumber()
+    OnlineMP.deployed().then(function(instance) { app = instance;  })
+

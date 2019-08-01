@@ -1,208 +1,159 @@
 pragma solidity >=0.5.0;
 
+import "./Ownable.sol";
     /// @author zen2see
     /// @title OnlineMarketPlace project
-
 
     /*
         Simple OnlineMarketPlace that operates on the blockchain.
     */
-contract OnlineMP {
+contract OnlineMP is Ownable {
     // state variables
-    address[] public mpAdmins;
-    address[] public storeOwners;
-    address public buyer;
-    mapping (address => bool) public isAdmin;
-    uint DEFAULT_PRICE = 100 wei;
+    mapping (address => bool) public isStoreOwners;
 
     /*
-        @notice A Store contains @storeId, @storeName, @storeBal, @storeOwner, @products, @shoppers
-        The struct has 5 fields: storeName, sroreBBal, storeOwner, product
-        Choose the appropriate variable type for each field.
-        The "buyers" field should keep track of addresses and how many tickets each buyer purchases.
+        @notice A Store:
+        Store id: @storeId
+        Store name: @storeName
+        Store balance: @storeBal
+        Store owner: @storeOwners
+        Store products: @products
     */
     struct Store {
       uint storeId;
       string storeName;
-      uint storeBal;
-      address storeOwner;
-      uint[] storeProducts;
-      // mapping (address => uint) shoppers;
+      uint256 storeBal;
+      address storeOwners;
+      uint256[] products;
     }
 
-    mapping (uint => Store) public stores;
+    /*
+        state variables, declare a store as a structure type through mapping
+    */
+    mapping(uint => Store) public stores;
     uint storeCounter;
 
     /*
-        @notice A product:
+        @notice A Product:
         Product id: @prodId
         Product name: @prodName
         Product desc: @prodDescription
         Product price: @prodPrice
+        Product storeOwner: @storeOwner
+        Product buyer: @buyer
     */
     struct Product {
       uint prodId;
       string prodName;
       string prodDescription;
       uint256 prodPrice;
+      address storeOwner;
+      address buyer;
     }
 
-    //  more state variables
-    mapping (uint => Product) public products;
+    /*
+         more state variables as a structure type..
+    */
+    mapping(uint => Product) public products;
     uint prodCounter;
 
     /*
         LogAddStore should provide infromation about the store ID and store name
     */
     event LogAddStore(
-      uint _logAstoresId,
-      string _logAstoresName
+      uint _storesId,
+      string _storesName
     );
 
     /*
-        LogBuyTickets should provide information about the purchaser and the number of tickets purchased.
-        LogAddProduct should provide infromation about the product ID  and product name
+        LogAddProduct should provide infromation about the product ID, store ID and product name.
     */
     event LogAddProduct(
-      uint _logAproductId,
-      string _logAproductName
+      uint256 _storeId,
+      uint _productId,
+      string _productName
     );
 
     /*
-        LogSellProduct should provide information about the product ID and product name
+        LogSellProduct should provide information about the product ID and product name.
     */
     event LogSellProduct(
-      uint _logSprodId,
-      string _logSproductName
+      address indexed _storeOwner,
+      address indexed _buyer,
+      string  _productName,
+      uint256 _price
     );
 
     /*
         LogBuyTickets should provide information about the purchaser and the # of prodcuts purchased.
     */
     event LogBuyProduct(
-      address _purchaser,
-      uint _products
+      uint indexed _Id,
+      address indexed _storeOwner,
+      address indexed _buyer,
+      string  _productName,
+      uint256 _price
     );
 
-
     /*
-        Create a modifier that throws an error if the msg.sender is not the owner.
-
-    modifier isOwner() {
+        Create a modifier that throws an error if the address !storeOwner.
+    */
+    modifier isStoreOwner(address _isStoreOwner) {
       require(
-        msg.sender == owner,
-        "Only owner can call this function."
+        isStoreOwners[_isStoreOwner] == true,
+        "Only store owner can call ths function."
       );
       _;
     }
-    */
-
-    /*
-        Create a modifier that throws an error if the msg.sender is not the owner.
-    */
-    modifier isAddressAdmin() {
-      require(
-        isAdmin[msg.sender] == true,
-        "Only an Admin can call this function."
-      );
-      _;
-    }
-
 
     /*
         Define a constructor.
-        The constructor takes 3 arguments, the description, the URL and the number of tickets for sale.
-        Set the owner to the creator of the contract.
-        Set the appropriate myEvent details.
     */
     constructor ()
       public
     {
-      //mpAdmins[0] = msg.sender;
+      addStore(0, "Default Store", 10);
+      getStore();
     }
 
-    // Add store OWNER
-    function addStoreOwners(uint _idOfStore, address _storeOwnerAddress)
-      public
-      isAddressAdmin()
-      returns(bool added)
-    {   // need to put an if condition and return false if fails
-        stores[_idOfStore].storeOwner = _storeOwnerAddress;
-        return true;
+    /**
+        @notice Payable fallback
+    */
+    function() external payable {
+
     }
 
-    // add a product
-    function addProduct(string memory _pname, string memory _pdesc, uint256 _pprice)
-      public
-    {
-      prodCounter++;
-      products[prodCounter] = Product(
-        prodCounter,
-        _pname,
-        _pdesc,
-        _pprice
-      );
-    }
 
-    // get a product
-    function getProduct()
+    function getStore()
       public
       view
       returns(
-        uint _prodId,
-        string memory _prodName,
-        string memory _prodDescription,
-        uint _prodPrice
+        uint _storeId,
+        string memory _storeName,
+        uint _storeBal
+        //address _storeOwner,
+        //uint[] memory _storeProd
       )
     {
-      return(_prodId, _prodName, _prodDescription, _prodPrice);
-    }
-
-    // sell a product
-    function sellProduct(uint _spID, string memory _spname, string memory _spdesc, uint256 _sprice)
-      // payable
-      public
-    {
-      products[_spID] = Product(
-        _spID,
-        _spname,
-        _spdesc,
-        _sprice
+      return(
+        stores[storeCounter].storeId,
+        stores[storeCounter].storeName,
+        stores[storeCounter].storeBal
+        //stores[storeCounter].storeOwner,
+        //stores[storeCounter].storeProduct
       );
-      emit LogSellProduct(_spID, _spname);
     }
 
-    // buy a products
-    function buyProduct()
+
+    function addStore(uint astoriID, string memory _aStoreName, uint256 _stoBal)
       public
+      returns( bool success)
     {
-      // check if products are available
-
-      require(
-        prodCounter > 0,
-        "Verify there are products available"
-      );
-      // require buyer is not store owner or admin
-      prodCounter++;
+      storeCounter++;
+      stores[storeCounter].storeId = astoriID;
+      stores[storeCounter].storeName = _aStoreName;
+      stores[storeCounter].storeBal = _stoBal;
+      //stores[storeCounter].storeProduct
     }
-
-    //function addStore(string _storename)
-
-    /*
-    centralMarketStores -- managed by admins who can add stores
-    admins -- allow storeOwners to addStores() to centralMarket
-    storeOwners -- can manage their stores funds and inventory
-    stores
-      inventory funds
-      goods
-    shoppers can purchase goods in stock from store storeOwners
-
-
-    */
-
-    /*
-    LogBuyTickets should provide information about the purchaser and the number of tickets purchased.
-    LogGetRefund should provide information about the refund requester and the number of tickets refunded.
-    LogEndSale should provide infromation about the contract owner and the balance transferred to them.
-    */
+    return (true);
 }
