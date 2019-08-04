@@ -6,7 +6,7 @@ App = {
 
   init: function() {
     // load storesRow'
-
+    /*
     var storesRow = $('#storesRow');
     var storesTemplate = $('#storesTemplate');
 
@@ -17,6 +17,7 @@ App = {
     storesTemplate.find('.store-owner').text('0x01234567890123456789012345678901');
     storesTemplate.find('.store-products').text('Store Product 1');
     storesRow.append(storesTemplate.html());
+    *///,
 
     return App.initWeb3();
   },
@@ -74,31 +75,57 @@ App = {
     // refresh account information
     App.displayAccountInfo();
     // retrieve the stores placeholder and clear it
-    //$('#storesRow').empty();
+    $('#storesRow').empty();
 
     App.contracts.OnlineMP.deployed().then(function(instance) {
       return instance.getStore();
     }).then(function(stores) {
-      // logic to check if store exists
+      // logic to check if store exists bbased on storeOwner field
+      //if (stores[3] == 0x0) {
+        // no stores
+        //return;
+      //}
       // retrieve the store template and fill it
-      //var storesTemplate = $('#storesTemplate');
-      //storesTemplate.find('.panel-title').text(stores[storeId].storeId);
-      //storesTemplate.find('.store-id').text(stores[storeId].storeId);
-      //storesTemplate.find('.store-name').text(stores[storeId].storeId);
-      //storesTemplate.find('.store-balance').text(web3.fromWei(stores[storeId].storeBal, "ether"));
-      //storesTemplate.find('.store-balance').text(web3.fromWei(stores[storeId].storeId.storeBal, "ether"));
-      //storesTemplate.find('.store-owner').text(storeOwner);
+      var storesTemplate = $('#storesTemplate');
+      storesTemplate.find('.panel-title').text(stores[1]);
+      storesTemplate.find('.store-id').text(stores[0]);
+      storesTemplate.find('.store-name').text(stores[1]);
+      storesTemplate.find('.store-balance').text(web3.fromWei(stores[2].storeBal, "ether"));
+      storesTemplate.find('.store-owner').text(stores[3]);
+      storesTemplate.find('.store-products').text(stores[4]);
 
-      //var storeOwner = msg.sender;
-
-      // add this article
-      //$('#storesRow').append(storesTemplate.html());
+      var storeOwner = stores[3];
+      if (storeOwner == App.account) {
+        storeOwner = "You";
+      }
+      // add this store
+      $('#storesRow').append(storesTemplate.html());
     }).catch(function(err) {
       console.error(err.message);
     });
-  }
-};
+  },
 
+  addStore: function() {
+    // retrieve the detail of the store
+    var _storeName = $('#store_name').val();
+    var _storeOwner = $('#store-owner').val();
+    if ((_storeName.trim() == '')) {
+      // no store
+      return false;
+    }
+
+    App.contracts.OnlineMP.deployed().then(function(instance) {
+      return instance.addStore(_storeName, App.account, {
+        from: App.account,
+        gas: 50000
+      });
+    }).then(function(result) {
+      App.reloadStores();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+};
 
 $(function() {
   $(window).load(function() {

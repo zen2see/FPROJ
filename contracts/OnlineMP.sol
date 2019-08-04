@@ -110,10 +110,10 @@ contract OnlineMP is Ownable {
     constructor ()
       public
     {
-
+      //addStore("Default Store name", owner);
     }
 
-    /**
+    /*
         @notice Payable fallback
     */
     function() external payable {
@@ -135,7 +135,10 @@ contract OnlineMP is Ownable {
       )
     {
         storeCounter++;
-        return(storeCounter, _storeName, _storeOwnedBy);
+        storeName = _storeName;
+        _storeOwnedBy = msg.sender;
+        storeId = storeCounter;
+        return(storeId, _storeName, _storeOwnedBy);
     }
 
     /*
