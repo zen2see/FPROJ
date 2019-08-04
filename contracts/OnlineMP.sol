@@ -59,7 +59,7 @@ contract OnlineMP is Ownable {
         LogAddStore should provide infromation about the store ID and store name
     */
     event LogAddStore(
-      uint _storesId,
+      uint indexed _storesId,
       string _storesName
     );
 
@@ -67,8 +67,8 @@ contract OnlineMP is Ownable {
         LogAddProduct should provide infromation about the product ID, store ID and product name.
     */
     event LogAddProduct(
-      uint256 _storeId,
-      uint _productId,
+      uint256 indexed _storeId,
+      uint indexed _productId,
       string _productName
     );
 
@@ -126,19 +126,22 @@ contract OnlineMP is Ownable {
           storeName
           storeOwner
     */
-    function addStore(string memory _storeName, address _storeOwnedBy)
+    function addStore(string memory _storeName)
       public
-      returns(
-        uint storeId,
-        string memory storeName,
-        address storeOwnedBy
-      )
     {
-        storeCounter++;
-        storeName = _storeName;
-        _storeOwnedBy = msg.sender;
-        storeId = storeCounter;
-        return(storeId, _storeName, _storeOwnedBy);
+      // store count
+      storeCounter++;
+
+      // update via storeId
+      stores[storeCounter] = Store(
+        storeCounter++,
+        _storeName,
+        0,
+        msg.sender,
+        stores[storeCounter].products
+      );
+
+      emit LogAddStore(storeCounter, _storeName);
     }
 
     /*
