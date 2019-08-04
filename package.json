@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/zen2see/FPROJ#readme",
   "dependencies": {
-    "node-modules": "^1.0.1"
+    "node-modules": "^1.0.1",
+    "tunnel-agent-fix": "0.0.1"
   },
   "devDependencies": {
     "lite-server": "^2.5.3"
