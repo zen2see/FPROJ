@@ -128,7 +128,7 @@ contract OnlineMP is Ownable {
           storeName
           storeOwner
     */
-    function addStore(string memory _storeName)
+    function addStore(string memory _storeName, address _newStoreOwner)
       public
     {
 
@@ -144,7 +144,7 @@ contract OnlineMP is Ownable {
         storeCounter,
         _storeName,
         0,
-        msg.sender,
+        _newStoreOwner,
         stores[storeCounter].products
       );
 
