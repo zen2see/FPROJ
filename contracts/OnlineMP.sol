@@ -182,6 +182,82 @@ contract OnlineMP is Ownable {
     }
 
     /*
+        This function gets the store counter
+    */
+    function getNumberOfStores() public view returns (uint) {
+      return storeCounter;
+    }
+
+    /*
+        This function gets all the stores
+    */
+    function getStores() public view returns (uint[] memory) {
+    /*
+        Store IDs
+    */
+      uint[] memory storeIds = new uint[](storeCounter);
+
+      uint numberOfStores = 0;
+
+    /*
+        Collect IDs of stores available
+    */
+      for (uint i  =1; i <= storeCounter; i++) {
+        if (stores[i].storeOwnedBy == address(0x0)) {
+          storeIds[numberOfStores] = stores[i].storeId;
+          numberOfStores++;
+        }
+      }
+    /*
+        Create a storesOwned array
+    */
+      uint[] memory storesOwned = new uint[](numberOfStores);
+      for(uint j = 0; j < numberOfStores; j++) {
+        storesOwned[j] = storeIds[j];
+      }
+      return storesOwned;
+    }
+
+    /*
+        This function gets the product counter
+    */
+    function getNumberOfProducts() public view returns (uint) {
+      return prodCounter;
+    }
+
+    /*
+        This function gets the products for sale
+    */
+    function getProductsForSale() public view returns (uint[] memory) {
+    /*
+        Store product IDs
+    */
+      uint[] memory productIds = new uint[](prodCounter);
+
+      uint numberOfProductsForSale = 0;
+
+    /*
+        Collect IDs of products still for available for sale
+    */
+      for (uint i  =1; i <= prodCounter; i++) {
+        if (products[i].purchaser == address(0x0)) {
+          productIds[numberOfProductsForSale] = products[i].prodId;
+          numberOfProductsForSale++;
+        }
+      }
+    /*
+        Create a forSale array
+    */
+      uint[] memory forSale = new uint[](numberOfProductsForSale);
+      for(uint j = 0; j < numberOfProductsForSale; j++) {
+        forSale[j] = productIds[j];
+      }
+      return forSale;
+    }
+
+
+
+    /*
         This function buys a product from store:
           storeId
           prodId
@@ -238,13 +314,14 @@ contract OnlineMP is Ownable {
     */
         emit LogBuyProduct(_productId, product.purchaser, product.prodName, product.prodPrice);
     }
+
     /*
         This function retrieves values for:
           storeId
           storeName
           storeBBal
           storeOwner
-    */
+
     function getStore()
       public
       pure
@@ -258,4 +335,6 @@ contract OnlineMP is Ownable {
     {
         return(_storeId, _storeName, _storeBal, _storeOwner, _products);
     }
+    */
+
 }

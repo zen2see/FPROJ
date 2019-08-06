@@ -7,7 +7,7 @@ contract('OnlineMP', function(accounts) {
   const secondAccount = accounts[1]
   const thirdAccount = accounts[2]
 
-  const DefaultStoreName = "Defalut Store Name";
+  const DefaultStoreName = "Default Store Name";
   var storeId = 0;
   var storeBalance = 0;
   var storeOwner = 0x0;
@@ -22,7 +22,7 @@ contract('OnlineMP', function(accounts) {
   describe("Setup", async() => {
 
       it("the addStore should return store details", async() => {
-        const nameCheck = await instance.addStore(DefaultStoreName, firstAccount)
+        const nameCheck = await instance.addStore(DefaultStoreName)
         assert.equal(nameCheck.storeName, DefaultStoreName, "the Store names should match")
         //assert.equal(event.sales, 0, "the ticket sales should be 0")
       })

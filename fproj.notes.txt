@@ -1,7 +1,13 @@
 ﻿truffle migrate –reset –network ganache
 truffle console –network ganache
     OnlineMP.address
+    web3.eth.getBalance(accounts[1]) RETURNS STRING IN WEI
+    web3.utils.toWei("100", 'ether') RETURNS STRING 1000000000000000000
     web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]), “ether”).toNumber()
     OnlineMP.deployed().then(function(instance) { app = instance })
     app.getProducts()
-
+    app.addStore("Storename1")
+    app.addProduct("ProdName", "ProdDesc", 3)
+    app.getNumberOfProducts()
+    app.getProductsForSale()
+    app.products(2) SHOWS DETAILS ABOUT PRODUCT
