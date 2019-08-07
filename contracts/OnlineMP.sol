@@ -63,7 +63,8 @@ contract OnlineMP is Ownable {
     */
     event LogAddStore(
       uint indexed _storesId,
-      string _storesName
+      string _storesName,
+      address _storeOwner
     );
 
     /*
@@ -109,10 +110,10 @@ contract OnlineMP is Ownable {
     /*
         Define a constructor.
     */
-    constructor ()
+    constructor (string memory _defaultStoreName, address _defaultAddress)
       public
     {
-      //addStore("Default Store name", owner);
+      addStore(_defaultStoreName, _defaultAddress);
     }
 
     /*
@@ -148,7 +149,7 @@ contract OnlineMP is Ownable {
         stores[storeCounter].products
       );
 
-      emit LogAddStore(storeCounter, _storeName);
+      emit LogAddStore(storeCounter, _storeName, _newStoreOwner);
     }
 
     /*
@@ -202,7 +203,7 @@ contract OnlineMP is Ownable {
     /*
         Collect IDs of stores available
     */
-      for (uint i  =1; i <= storeCounter; i++) {
+      for (uint i = 1; i <= storeCounter; i++) {
         if (stores[i].storeOwnedBy == address(0x0)) {
           storeIds[numberOfStores] = stores[i].storeId;
           numberOfStores++;
