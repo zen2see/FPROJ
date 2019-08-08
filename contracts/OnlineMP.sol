@@ -192,7 +192,7 @@ contract OnlineMP is Ownable {
     /*
         This function gets all the stores
     */
-    function getStores() public view returns (uint[] memory) {
+    function getStoresOwned() public view returns (uint[] memory) {
     /*
         Store IDs
     */
@@ -204,7 +204,7 @@ contract OnlineMP is Ownable {
         Collect IDs of stores available
     */
       for (uint i = 1; i <= storeCounter; i++) {
-        if (stores[i].storeOwnedBy == address(0x0)) {
+        if (stores[i].storeOwnedBy != address(0)) {
           storeIds[numberOfStores] = stores[i].storeId;
           numberOfStores++;
         }
@@ -316,26 +316,5 @@ contract OnlineMP is Ownable {
         emit LogBuyProduct(_productId, product.purchaser, product.prodName, product.prodPrice);
     }
 
-    /*
-        This function retrieves values for:
-          storeId
-          storeName
-          storeBBal
-          storeOwner
-
-    function getStore()
-      public
-      pure
-      returns(
-        uint _storeId,
-        string memory _storeName,
-        uint _storeBal,
-        address _storeOwner,
-        bytes32[] memory _products
-      )
-    {
-        return(_storeId, _storeName, _storeBal, _storeOwner, _products);
-    }
-    */
 
 }

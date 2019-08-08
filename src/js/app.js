@@ -5,20 +5,6 @@ App = {
   loading: false,
 
   init: function() {
-    // load storesRow'
-    /*
-    var storesRow = $('#storesRow');
-    var storesTemplate = $('#storesTemplate');
-
-    storesTemplate.find('.panel-title').text('Store Name 1');
-    storesTemplate.find('.store-id').text('StoreId');
-    storesTemplate.find('.store-name').text('Store Name');
-    storesTemplate.find('.store-balance').text('0.0');
-    storesTemplate.find('.store-owner').text('0x01234567890123456789012345678901');
-    storesTemplate.find('.store-products').text('Store Product 1');
-    storesRow.append(storesTemplate.html());
-    *///,
-
     return App.initWeb3();
   },
 
@@ -72,37 +58,63 @@ App = {
   },
 
   reloadStores: function() {
+    // avoid reentry
+    if (App.loading) {
+      return;
+    }
+    App.loading = true;
+
     // refresh account information
     App.displayAccountInfo();
-    // retrieve the stores placeholder and clear it
-    $('#storesRow').empty();
+
+    var onlineMPinstance;
 
     App.contracts.OnlineMP.deployed().then(function(instance) {
-      return instance.getStore();
-    }).then(function(stores) {
-      // logic to check if store exists bbased on storeOwner field
-      //if (stores[3] == 0x0) {
-        // no stores
-        //return;
-      //}
-      // retrieve the store template and fill it
-      var storesTemplate = $('#storesTemplate');
-      storesTemplate.find('.panel-title').text(stores[1]);
-      storesTemplate.find('.store-id').text(stores[0]);
-      storesTemplate.find('.store-name').text(stores[1]);
-      storesTemplate.find('.store-balance').text(web3.fromWei(stores[2].storeBal, "ether"));
-      storesTemplate.find('.store-owner').text(stores[3]);
-      storesTemplate.find('.store-products').text(stores[4]);
+      onlineMPinstance = instance;
+      return onlineMPinstance.getStoresOwned();
+    }).then(function(storeIds) {
+      // clear storesRow
+      $('#storesRow').empty();
 
-      var storeOwner = stores[3];
-      if (storeOwner == App.account) {
-        storeOwner = "You";
+      for (var i = 0; i < storeIds.length; i++) {
+         var storeId = storeIds[i];
+         onlineMPinstance.stores(storeId.toNumber()).then(function(store) {
+           App.displayStore(store[0], store[1], store[2], store[3], store[4], store[5]);
+         });
       }
-      // add this store
-      $('#storesRow').append(storesTemplate.html());
+      App.loading = false;
     }).catch(function(err) {
       console.error(err.message);
+      App.loading = false;
     });
+  },
+
+  displayStore: function(id, storeOwner, name, description, price, products) {
+    var storesRow = $('#storesRow');
+
+    var etherPrice = web3.fromWei(price, "ether");
+
+    var storesTemplate = $('#storesTemplate');
+    storesTemplate.find('.panel-title').text(name);
+    storesTemplate.find('.store-id').text(description);
+    storesTemplate.find('.store-name').text(name);
+    storesTemplate.find('.store-balance').text(etherPrice + "ETH");
+    storesTemplate.find('.store-owner').text(storeOwner);
+    storesTemplate.find('.store-products').text(products);
+    storesTemplate.find('.btn-buy').attr('data-id', id);
+    storesTemplate.find('.btn-buy').attr('data-value', etherPrice);
+
+    // storeOwner
+    if (storeOwner = App.account) {
+      storesTemplate.find('.store-owner').text('You');
+      storesTemplate.find('.btn-buy').hide();
+    } else {
+      storesTemplate.find('store-owner').text('storeOwner');
+      storesTemplate.find('.btn-bbuy').show();
+    }
+
+    // add new store
+    storesRow.append(storesTemplate.html());
   },
 
   addStore: function() {
@@ -117,15 +129,75 @@ App = {
     App.contracts.OnlineMP.deployed().then(function(instance) {
       return instance.addStore(_storeName, App.account, {
         from: App.account,
-        gas: 50000
+        gas: 500000
       });
     }).then(function(result) {
-      App.reloadStores();
+
     }).catch(function(err) {
       console.error(err);
     });
   },
+
+  // listen to events triggered by the contract
+  listenToEvents: function() {
+    App.contracts.OnlineMP.deployed().then(function(instance) {
+      instance.LogAddStore({}, {}).watch(function(error, event) {
+        if (!error) {
+          $("#events").append('<li class="list-group-item">' + event.args._name + ' is now a new store</li>');
+        } else {
+          console.error(error);
+        }
+        App.reloadStores();
+      });
+
+      instance.LogAddProduct({}, {}).watch(function(error, event) {
+        if (!error) {
+          $("#events").append('<li class="list-group-item">' + event.args._purchaser + ' bought ' + event.args._name + '</li>');
+        } else {
+          console.error(error);
+        }
+        App.reloadStores();
+      });
+    });
+  }
 };
+/*
+addProduct: function() {
+  // retrieve the detail of the product
+  var _prodName = $('#prod_name').val();
+  var _prodDesc = $('#prod-desc').val()
+  var _storeOwner = $('#purchaser').val();
+  if ((_storeName.trim() == '')) {
+    // no store
+    return false;
+  }
+
+  App.contracts.OnlineMP.deployed().then(function(instance) {
+    return instance.addStore(_storeName, App.account, {
+      from: App.account,
+      gas: 50000
+    });
+  }).then(function(result) {
+
+  }).catch(function(err) {
+    console.error(err);
+  });
+},
+
+// listen to events triggered by the contract
+listenToEvents: function() {
+  App.contracts.OnlineMP.deployed().then(function(instance) {
+    instance.LogAddStore({}, {}).watch(function(error, event) {
+      if (!error) {
+        $("#events").append('<li class="list-group-item">' + event.args._name + ' is now a new store</li>');
+      } else {
+        console.error(error);
+      }
+      App.reloadStores();
+    });
+*/
+
+
 
 $(function() {
   $(window).load(function() {

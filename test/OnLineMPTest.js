@@ -27,7 +27,7 @@ contract('OnlineMP', function(accounts) {
           assert.equal(owner, firstAccount, "the storeOwner address should be the owner address")
       })
 
-      it("the addStore should return store details", async() => {
+      it("it should let us add a store", async() => {
         const instance = await OnlineMP.new(DefaultStoreName, firstAccount)
         const nameCheck = await instance.getStores()
         assert.equal(nameCheck.stores[storeId].storeName, DefaultStoreName, "the Store names should match")
