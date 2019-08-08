@@ -37,7 +37,7 @@ App = {
         web3.eth.getBalance(account, function(err, balance) {
           if (err === null) {
             // display balance
-            $('#accountBalance').text(web3.fromWei(balance, "ether") + "ETH");
+            $('#accountBalance').text(web3.fromWei(balance, "ether") + " ETH");
           }
         })
       }
@@ -79,7 +79,7 @@ App = {
       for (var i = 0; i < storeIds.length; i++) {
          var storeId = storeIds[i];
          onlineMPinstance.stores(storeId.toNumber()).then(function(store) {
-           App.displayStore(store[0], store[1], store[2], store[3], store[4], store[5]);
+           App.displayStore(store[0], store[1], store[2], store[3], store[4]);
          });
       }
       App.loading = false;
@@ -89,16 +89,16 @@ App = {
     });
   },
 
-  displayStore: function(id, storeOwner, name, description, price, products) {
+  displayStore: function(id, name, storeBalance, storeOwner, products) {
     var storesRow = $('#storesRow');
 
-    var etherPrice = web3.fromWei(price, "ether");
+    var etherPrice = web3.fromWei(storeBalance, "ether");
 
     var storesTemplate = $('#storesTemplate');
     storesTemplate.find('.panel-title').text(name);
-    storesTemplate.find('.store-id').text(description);
+    storesTemplate.find('.store-id').text(id);
     storesTemplate.find('.store-name').text(name);
-    storesTemplate.find('.store-balance').text(etherPrice + "ETH");
+    storesTemplate.find('.store-balance').text(etherPrice + " ETH");
     storesTemplate.find('.store-owner').text(storeOwner);
     storesTemplate.find('.store-products').text(products);
     storesTemplate.find('.btn-buy').attr('data-id', id);
