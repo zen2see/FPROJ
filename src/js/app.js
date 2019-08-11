@@ -118,16 +118,17 @@ App = {
   },
 
   addStore: function() {
-    // retrieve the detail of the store
+    // get values from web interface
     var _storeName = $('#store_name').val();
-    var _storeOwner = $('#store-owner').val();
-    if ((_storeName.trim() == '')) {
-      // no store
+    var _storeOwner = App.account;
+    // var _price = web3.toWei(parseFloat($('#article_price').val() || 0), "ether");
+    if(_storeName.trim() == '') {
+      // storename cannot be empty
       return false;
     }
 
     App.contracts.OnlineMP.deployed().then(function(instance) {
-      return instance.addStore(_storeName, App.account, {
+      return instance.addStore(_storeName, _storeOwner, {
         from: App.account,
         gas: 500000
       });
@@ -138,10 +139,32 @@ App = {
     });
   },
 
+  selectStore: function() {
+    var _storeId = $('#store_id').val();
+
+    App.contracts.OnlineMP.deployed().then(function(instance) {
+      onlineMPinstance = instance;
+      return onlineMPinstance.selectStore(_storeId);
+    }).then(function(result) {
+      // clear storesRow
+      $('#storesRow').empty();
+
+      //var storeId = _storeId;
+      onlineMPinstance.stores(_storeId).then(function(store) {
+        App.displayStore(store[0], store[1], store[2], store[3], store[4]);
+      });
+      App.loading = false;
+    }).catch(function(err) {
+      console.error(err.message);
+      App.loading = false;
+    });
+  },
+
   // listen to events triggered by the contract
   listenToEvents: function() {
     App.contracts.OnlineMP.deployed().then(function(instance) {
       instance.LogAddStore({}, {}).watch(function(error, event) {
+        $("#events").append('<li class="list-group-item">' + event.args._purchaser + ' bought ' + event.args._name + '</li>');
         if (!error) {
           $("#events").append('<li class="list-group-item">' + event.args._name + ' is now a new store</li>');
         } else {

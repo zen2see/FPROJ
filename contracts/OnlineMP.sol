@@ -33,7 +33,7 @@ contract OnlineMP is Ownable {
     /*
         state variables, declare a store as a structure type through mapping
     */
-    mapping(uint => Store) public stores;
+    mapping (uint => Store) public stores;
     uint storeCounter;
 
     /*
@@ -55,11 +55,11 @@ contract OnlineMP is Ownable {
     /*
          more state variables as a structure type..
     */
-    mapping(uint => Product) public products;
+    mapping (uint => Product) public products;
     uint prodCounter;
 
     /*
-        LogAddStore should provide infromation about the store ID and store name
+        LogAddStore should provide info about the store ID and store name
     */
     event LogAddStore(
       uint indexed _storesId,
@@ -68,7 +68,7 @@ contract OnlineMP is Ownable {
     );
 
     /*
-        LogAddProduct should provide infromation about the product ID, name, description and price.
+        LogAddProduct should provide info about product ID, name, desc and price
     */
     event LogAddProduct(
       uint indexed _prodId,
@@ -78,7 +78,7 @@ contract OnlineMP is Ownable {
     );
 
     /*
-        LogSellProduct should provide information about the product ID and product name.
+        LogSellProduct should provide info about the product ID and product name
     */
     event LogSellProduct(
       address indexed _storeOwner,
@@ -87,7 +87,7 @@ contract OnlineMP is Ownable {
     );
 
     /*
-        LogBuyTickets should provide information about the purchaser and the # of prodcuts purchased.
+        LogBuyTickets should provide info about purchaser and # of prod bought
     */
     event LogBuyProduct(
       uint indexed _productId,
@@ -97,7 +97,7 @@ contract OnlineMP is Ownable {
     );
 
     /*
-        Create a modifier that throws an error if the address !storeOwner.
+        Create a modifier that throws an error if the address !storeOwner
     */
     modifier isStoreOwner(address _isStoreOwner) {
       require(
@@ -159,7 +159,8 @@ contract OnlineMP is Ownable {
           prodDescription
           prodPrice
     */
-    function addProduct(string memory _prodName, string memory _prodDescription, uint _prodPrice)
+    function addProduct(
+      string memory _prodName, string memory _prodDescription, uint _prodPrice)
       public
     {
 
@@ -193,6 +194,7 @@ contract OnlineMP is Ownable {
         This function gets all the stores
     */
     function getStoresOwned() public view returns (uint[] memory) {
+
     /*
         Store IDs
     */
@@ -209,6 +211,7 @@ contract OnlineMP is Ownable {
           numberOfStores++;
         }
       }
+
     /*
         Create a storesOwned array
     */
@@ -217,6 +220,33 @@ contract OnlineMP is Ownable {
         storesOwned[j] = storeIds[j];
       }
       return storesOwned;
+    }
+
+    /*
+        Select a store via id
+    */
+    function selectStore(uint _storeId)
+      public
+      view
+      returns (
+        uint,
+        string memory,
+        uint256,
+        address,
+        bytes32[20] memory
+      )
+    {
+      require(
+        _storeId > 0 && _storeId <= getNumberOfStores(),
+        "The store Id is not vaild"
+      );
+      return (
+        stores[_storeId].storeId,
+        stores[_storeId].storeName,
+        stores[_storeId].storeBal,
+        stores[_storeId].storeOwnedBy,
+        stores[_storeId].products
+      );
     }
 
     /*
