@@ -8,6 +8,7 @@ import "./Ownable.sol";
         Simple OnlineMarketPlace that operates on the blockchain.
     */
 contract OnlineMP is Ownable {
+
     /*
         state variables
     */
@@ -27,7 +28,7 @@ contract OnlineMP is Ownable {
       string storeName;
       uint256 storeBal;
       address storeOwnedBy;
-      bytes32[20] products;
+      uint[] products;
     }
 
     /*
@@ -160,7 +161,10 @@ contract OnlineMP is Ownable {
           prodPrice
     */
     function addProduct(
-      string memory _prodName, string memory _prodDescription, uint _prodPrice)
+      string memory _prodName,
+      string memory _prodDescription,
+      uint _prodPrice
+    )
       public
     {
 
@@ -179,6 +183,8 @@ contract OnlineMP is Ownable {
         _prodPrice,
         msg.sender
       );
+
+      stores[storeCounter].products.push(products[prodCounter].prodId);
 
       emit LogAddProduct(prodCounter, _prodName, _prodDescription, _prodPrice);
     }
@@ -233,7 +239,7 @@ contract OnlineMP is Ownable {
         string memory,
         uint256,
         address,
-        bytes32[20] memory
+        uint[] memory
       )
     {
       require(
@@ -270,7 +276,7 @@ contract OnlineMP is Ownable {
     /*
         Collect IDs of products still for available for sale
     */
-      for (uint i  =1; i <= prodCounter; i++) {
+      for (uint i = 1; i <= prodCounter; i++) {
         if (products[i].purchaser == address(0x0)) {
           productIds[numberOfProductsForSale] = products[i].prodId;
           numberOfProductsForSale++;
