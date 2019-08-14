@@ -364,7 +364,7 @@ contract OnlineMP is Ownable {
     /*
         update purchaser
     */
-        bbtproduct.purchaser = msg.sender;
+        btproduct.purchaser = msg.sender;
 
     /*
         purchaser makes purchase avoid re-entrancy here
