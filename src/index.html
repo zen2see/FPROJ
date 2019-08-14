@@ -19,7 +19,7 @@
   <![endif]-->
 
   <!-- Application -->
-
+  <link href="css/app.css" rel="stylesheet">
 </head>
 
 <body>
@@ -39,9 +39,10 @@
       <div class="row panel panel-default">
         <div class="panel-heading clearfix">
           <div class="panel-title">
-            <button class="btn btn-info btn-lg pull-left" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
-            <button class="btn btn-info btn-lg center" data-toggle="modal" data-target="#selectStore">Select Store</button>
-            <button class="btn btn-info btn-lg pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
+            <button class="btn btn-info btn-md" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
+            <button class="btn btn-info btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
+            <button class="btn btn-info btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
+            <button class="btn btn-info btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
           </div>
         </div>
         <ul id="events" class="collapse list-group"></ul>
@@ -50,10 +51,13 @@
       <div id="storesRow" class="row">
         <!-- STORES LOAD HERE -->
       </div>
+      <div id="productsRow" class="row">
+          <!-- PRODUCTS LOAD HERE -->
+      </div>
     </div>
   </div>
 
-
+  <!-- Stores template -->
   <div id="storesTemplate" style="display: none;">
     <div class="row-lg-12">
       <div class="panel panel-default panel-articles">
@@ -67,6 +71,56 @@
           <strong>Store Balance</strong>: <span class="store-balance"></span><br/>
           <strong>Store Owner</strong>: <span class="store-owner"></span><br/>
           <strong>Store Products</strong>: <span class="store-products"></span><br/>
+          <!-- Table -->
+          <table class="table">
+            <tr>
+              <th>
+
+              </th>
+            </tr>
+            <tr>
+              <td>
+                <em>Product Id</em>: <span class="prod-id"></span><br/>
+                <em>Product Name</em>: <span class="prod-name"></span><br/>
+                <em>Product Description</em>: <span class="prod-desc"></span><br/>
+                <em>Product Price</em>: <span class="prod-price"></span><br/>
+                <em>Product Purchaser</em>: <span class="prod-purchaser"></span><br/>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Panel footer -->
+        <div class="panel-footer">
+          <button type="button" class="btn btn-primary btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
+          <button class="btn btn-primary btn-success btn-buy pull-right" data-toggle="modal" data-target="#addProduct">Add Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product template -->
+  <div id="productsTemplate" style="display: none;">
+    <div class="row-lg-12">
+      <div class="panel panel-default panel-articles">
+        <div class="panel-heading">
+          <h3 class="panel-title"></h3>
+        </div>
+        <!-- Panel body -->
+        <div class="panel-body">
+          <em>Product Id</em>: <span class="prod-id"></span><br/>
+          <em>Product Name</em>: <span class="prod-name"></span><br/>
+          <em>Product Description</em>: <span class="prod-desc"></span><br/>
+          <em>Product Price</em>: <span class="prod-price"></span><br/>
+          <em>Product Purchaser</em>: <span class="prod-purchaser"></span><br/>
+          <!--
+          <div class="d-flex flex-nowrap bd-highlight">
+            <div class="order-sm-1 p-2 bd-highlight"><strong>Product Id</strong>: <span class="prod-id"></span><br/></div>
+            <div class="order-sm-2 p-2 bd-highlight"><strong>Product Name</strong>: <span class="prod-name"></span><br/></div>
+            <div class="order-sm-3 p-2 bd-highlight"><strong>Product Description</strong>: <span class="prod-desc"></span><br/></div>
+            <div class="order-sm-4 p-2 bd-highlight"><strong>Product Price</strong>: <span class="prod-price"></span><br/></div>
+            <div class="order-sm-5 p-2 bd-highlight"><strong>Product Purchaser</strong>: <span class="prod-purchaser"></span><br/></div>
+          </div>
+        -->
         </div>
         <!-- Panel footer -->
         <div class="panel-footer">
@@ -86,6 +140,7 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add a store</h4>
         </div>
+          <!-- Modal body -->
         <div class="modal-body">
           <div class="row">
             <div class="col-lg-12">
@@ -145,7 +200,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add Product</h4>
+          <h4 class="modal-title">Add Product</h4><strong>This is for Store Id</strong>: <span class="store-id"></span><br/>
         </div>
         <!-- Modal body -->
         <div class="modal-body">
@@ -154,11 +209,11 @@
               <form>
                 <div class="form-group">
                   <label for="product_name">Product Name</label>
-                  <input type="text" class="form-control" id="product_name" placeholder="Enter the name of your product" maxlength="40>
+                  <input type="text" class="form-control" id="product_name" placeholder="Enter the name of your product" maxlength="40">
                 </div>
                 <div class="form-group">
                   <label for="description">Product Description</label>
-                  <textarea type="text" class="form-control vresize" id="product_description" placeholder="Describe your product" maxlength="255"></textarea>
+                  <textarea type="text" class="form-control vresize" id="product_description" placeholder="Describe your product" maxlength="80"></textarea>
                 </div>
                 <div class="form-group">
                   <label for="price">Price in ETH</label>
@@ -171,6 +226,37 @@
         <!-- Modal footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.addProduct(); return false;">Submit</button>
+          <button type="button" class="btn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal form to select a product -->
+  <div class="modal fade" id="selectProduct" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Select a Product</h4>
+        </div>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <form>
+                <div class="form-group">
+                  <label for="product_name">Product Id</label>
+                  <input type="text" class="form-control" id="prod_id" placeholder="Enter the product Id">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.selectProduct(); return false;">Submit</button>
           <button type="button" class="btn" data-dismiss="modal">Close</button>
         </div>
       </div>

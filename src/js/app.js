@@ -51,15 +51,17 @@ App = {
       // set the provider for our contracts
       App.contracts.OnlineMP.setProvider(App.web3Provider);
       // retrieve the stores from the contract
+
+      App.reloadProducts();
       return App.reloadStores();
     });
   },
 
   reloadStores: function() {
     // avoid reentry
-    if (App.loading) {
-      return;
-    }
+    //if (App.loading) {
+      //return;
+    //}
     App.loading = true;
     // refresh account information
     App.displayAccountInfo();
@@ -74,6 +76,34 @@ App = {
          var storeId = storeIds[i];
          onlineMPinstance.stores(storeId.toNumber()).then(function(store) {
            App.displayStore(store[0], store[1], store[2], store[3], store[4]);
+         });
+      }
+      App.loading = false;
+    }).catch(function(err) {
+      console.error(err.message);
+      App.loading = false;
+    });
+  },
+
+  reloadProducts: function() {
+    // avoid reentry
+    if (App.loading) {
+      return;
+    }
+    App.loading = true;
+    // refresh account information
+    App.displayAccountInfo();
+    var onlineMPinstance;
+    App.contracts.OnlineMP.deployed().then(function(instance) {
+      onlineMPinstance = instance;
+      return onlineMPinstance.getProductsForSale();
+    }).then(function(productIds) {
+      // clear storesRow
+      $('#productsRow').empty();
+      for (var i = 0; i < productIds.length; i++) {
+         var prodId = productIds[i];
+         onlineMPinstance.products(prodId.toNumber()).then(function(product) {
+           App.displayProduct(product[0], product[1], product[2], product[3], product[4], product[5]);
          });
       }
       App.loading = false;
@@ -106,6 +136,31 @@ App = {
     // add new store
     storesRow.append(storesTemplate.html());
   },
+
+  displayProduct: function(prodId, prodName, prodDescription, prodPrice, prodPurchaser) {
+    var productsRow = $('#productsRow');
+    var etherProdPrice = web3.fromWei(prodPrice, "ether");
+    var productsTemplate = $('#productsTemplate');
+    productsTemplate.find('.panel-title').text(prodName);
+    productsTemplate.find('.prod-id').text(prodId);
+    productsTemplate.find('.prod-name').text(prodName);
+    productsTemplate.find('.prod-desc').text(prodDescription)
+    productsTemplate.find('.prod-price').text(etherProdPrice + " ETH");
+    productsTemplate.find('.prod-purchaser').text(prodPurchaser);
+    productsTemplate.find('.btn-buy').attr('data-id', prodId);
+    productsTemplate.find('.btn-buy').attr('data-value', etherProdPrice);
+    // storeOwner
+    if (productPurchaser = App.account) {
+      productsTemplate.find('.prod-purchaser').text('You');
+      productsTemplate.find('.btn-buy').show();
+    } else {
+      productsTemplate.find('prod-purchaser').text('prodPurchaser');
+      productsTemplate.find('.btn-buy').show();
+    }
+    // add new product
+    productsRow.append(productsTemplate.html());
+  },
+
 
   addStore: function() {
     // get values from web interface
@@ -151,7 +206,8 @@ App = {
     var _prodName = $('#product_name').val();
     var _prodDesc = $('#product_description').val();
     var _prodPrice = web3.toWei(parseFloat($('#product_price').val() || 0), "ether");
-    // var _price = web3.toWei(parseFloat($('#article_price').val() || 0), "ether");
+    var storesTemplate = $('#storesTemplate');
+    storesTemplate.find('.store-id').val();
     if((_prodName.trim() == '') || (_prodPrice == 0)) {
       // nothing to sell
       return false;
@@ -164,6 +220,25 @@ App = {
     }).then(function(result) {
     }).catch(function(err) {
       console.error(err);
+    });
+  },
+
+  selectProduct: function() {
+    var _prodId = $('#prod_id').val();
+    App.contracts.OnlineMP.deployed().then(function(instance) {
+      onlineMPinstance = instance;
+      return onlineMPinstance.selectProduct(_prodId);
+    }).then(function(result) {
+      // clear storesRow
+      $('#productsRow').empty();
+      //var storeId = _storeId;
+      onlineMPinstance.products(_prodId).then(function(product) {
+        App.displayProduct(product[0], product[1], product[2], product[3], product[4]);
+      });
+      App.loading = false;
+    }).catch(function(err) {
+      console.error(err.message);
+      App.loading = false;
     });
   },
 

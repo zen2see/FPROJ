@@ -277,7 +277,7 @@ contract OnlineMP is Ownable {
         Collect IDs of products still for available for sale
     */
       for (uint i = 1; i <= prodCounter; i++) {
-        if (products[i].purchaser == address(0x0)) {
+        if (products[i].purchaser != address(0)) {
           productIds[numberOfProductsForSale] = products[i].prodId;
           numberOfProductsForSale++;
         }
@@ -292,7 +292,32 @@ contract OnlineMP is Ownable {
       return forSale;
     }
 
-
+    /*
+        Select a product via id
+    */
+    function selectProduct(uint _prodId)
+      public
+      view
+      returns (
+        uint,
+        string memory,
+        string memory,
+        uint256,
+        address
+      )
+    {
+      require(
+        _prodId > 0 && _prodId <= getNumberOfProducts(),
+        "The product Id is not vaild"
+      );
+      return (
+        products[_prodId].prodId,
+        products[_prodId].prodName,
+        products[_prodId].prodDescription,
+        products[_prodId].prodPrice,
+        products[_prodId].purchaser
+      );
+    }
 
     /*
         This function buys a product from store:
