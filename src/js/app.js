@@ -52,16 +52,16 @@ App = {
       App.contracts.OnlineMP.setProvider(App.web3Provider);
       // retrieve the stores from the contract
 
-      App.reloadProducts();
+      //App.reloadProducts();
       return App.reloadStores();
     });
   },
 
   reloadStores: function() {
     // avoid reentry
-    //if (App.loading) {
-      //return;
-    //}
+    if (App.loading) {
+      return;
+    }
     App.loading = true;
     // refresh account information
     App.displayAccountInfo();
@@ -76,8 +76,10 @@ App = {
          var storeId = storeIds[i];
          onlineMPinstance.stores(storeId.toNumber()).then(function(store) {
            App.displayStore(store[0], store[1], store[2], store[3], store[4]);
+           return onlineMPinstance.getProductsForSale();
          });
       }
+
       App.loading = false;
     }).catch(function(err) {
       console.error(err.message);
@@ -98,7 +100,7 @@ App = {
       onlineMPinstance = instance;
       return onlineMPinstance.getProductsForSale();
     }).then(function(productIds) {
-      // clear storesRow
+      // clear productsRow
       $('#productsRow').empty();
       for (var i = 0; i < productIds.length; i++) {
          var prodId = productIds[i];
