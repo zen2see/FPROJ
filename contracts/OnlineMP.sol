@@ -343,10 +343,10 @@ contract OnlineMP is Ownable {
     /*
         retrieve product
     */
-        Product storage product = products[_productId];
+      Product storage btproduct = products[_productId];
 
-        require(
-          product.purchaser == address(0x0),
+      require(
+          btproduct.purchaser == address(0x0),
           "The product should not have been sold yet"
         );
 
@@ -357,24 +357,29 @@ contract OnlineMP is Ownable {
         );
     */
         require(
-          msg.value == product.prodPrice,
-          "The msg.value corresponds to the produt price"
+          msg.value >= btproduct.prodPrice,
+          "The msg.value covers to the product price"
         );
 
     /*
         update purchaser
     */
-        product.purchaser = msg.sender;
+        bbtproduct.purchaser = msg.sender;
 
     /*
         purchaser makes purchase avoid re-entrancy here
     */
-        product.purchaser.transfer(msg.value);
+        btproduct.purchaser.transfer(msg.value);
 
     /*
         emit LogBuyProduct event
     */
-        emit LogBuyProduct(_productId, product.purchaser, product.prodName, product.prodPrice);
+        emit LogBuyProduct(
+          _productId,
+          btproduct.purchaser,
+          bbtproduct.prodName,
+          bbtproduct.prodPrice
+        );
     }
 
 
