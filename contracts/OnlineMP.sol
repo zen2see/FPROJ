@@ -1,18 +1,19 @@
 pragma solidity >=0.5.0;
 
-import "./Ownable.sol";
+//import "./Ownable.sol";
     /// @author zen2see
     /// @title OnlineMarketPlace project
 
     /*
         Simple OnlineMarketPlace that operates on the blockchain.
     */
-contract OnlineMP is Ownable {
+contract OnlineMP {
 
     /*
         state variables
     */
-    address storeOwner;
+    // address storeOwner;
+    address payable public owner;
     mapping (address => bool) public isStoreOwners;
 
     /*
@@ -98,6 +99,17 @@ contract OnlineMP is Ownable {
     );
 
     /*
+        Create a modifier that throws an error if the msg.sender is not the owner.
+    */
+    modifier isOwner() {
+      require(
+        msg.sender == owner,
+        "Only owner can call this function."
+        );
+        _;
+    }
+
+    /*
         Create a modifier that throws an error if the address !storeOwner
     */
     modifier isStoreOwner(address _isStoreOwner) {
@@ -114,6 +126,7 @@ contract OnlineMP is Ownable {
     constructor (string memory _defaultStoreName, address _defaultAddress)
       public
     {
+      owner = msg.sender;
       addStore(_defaultStoreName, _defaultAddress);
     }
 
@@ -377,10 +390,8 @@ contract OnlineMP is Ownable {
         emit LogBuyProduct(
           _productId,
           btproduct.purchaser,
-          bbtproduct.prodName,
-          bbtproduct.prodPrice
+          btproduct.prodName,
+          btproduct.prodPrice
         );
     }
-
-
 }
