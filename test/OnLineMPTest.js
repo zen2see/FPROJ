@@ -1,54 +1,54 @@
+// The public file for automated testing...
+
 var OnlineMP = artifacts.require('OnlineMP')
-// let catchRevert = require("./exceptionsHelpers.js").catchRevert
+let catchRevert = require("./exceptionsHelpers.js").catchRevert
 const BN = web3.utils.BN
 
 contract('OnlineMP', function(accounts) {
-  const firstAccount = accounts[0]
-  const secondAccount = accounts[1]
-  const thirdAccount = accounts[2]
 
-  const DefaultStoreName = "Default Store Name"
-  const zeroValue = 0
-  const oneValue = 1
-  const zeroProducts = ""
+    const firstAccount = accounts[0]
+    const secondAccount = accounts[1]
+    const thirdAccount = accounts[2]
 
-  let instance
+    const DefaultStoreName = "Default Store Name"
+    const zeroValue = 0
+    const oneValue = 1
+    const zeroProducts = ""
 
-  beforeEach(async () => {
-      instance = await OnlineMP.new(DefaultStoreName, firstAccount)
-  })
+    let instance
 
-  describe("Setup", async() => {
+    beforeEach(async () => {
+        instance = await OnlineMP.new(DefaultStoreName, firstAccount)
+    })
 
-      it("OWNER should be set to the deploying address", async() => {
-          const owner = await instance.owner()
-          assert.equal(owner, firstAccount, "the deploying address should be the owner")
-      })
+    describe("Setup", async() => {
 
-      it("OWNER should be set as the default storeOwner address", async() => {
-          const owner = await instance.owner()
-          assert.equal(owner, firstAccount, "the storeOwner address should be the owner address")
-      })
+        it("Owner should be set to the deploying address", async() => {
+            const owner = await instance.owner()
+            assert.equal(owner, firstAccount, "the deploying address should be the owner")
+        })
 
-      it("One store should have been created", async() => {
-          //const instance = await OnlineMP.new("Default Store name", firstAccount)
-          const storeCountDetail = await instance.getNumberOfStores()
-          assert.equal(storeCountDetail.storeCounter, 1, "the store counter should be equal to one")
-      })
+        it("Owner should be set as the default storeOwner address", async() => {
+            const owner = await instance.owner()
+            assert.equal(owner, firstAccount, "the storeOwner address should be the owner address")
+        })
+
+        it("One store should have been created", async() => {
+            const storeCountDetail = await instance.getNumberOfStores()
+            assert.equal(storeCountDetail, 1, "the store counter should be equal to one")
+        })
+
+    })
+
+    describe("Functions", () => {
+
+        it("'Default store name' should be set as the store name, this account is not owner", async() => {
+            const storeNameDetail = await instance.addStore(DefaultStoreName, secondAccount)
+            const owner = await instance.owner()
+            assert.equal("Default Store Name", DefaultStoreName, "Default Store name should be the set")
+            assert.notEqual(secondAccount, owner, "The second account is not the owner")
+        })
       /*
-      it("'Default store name' should be set as the store name", async() => {
-          assert.equal(DefaultStoreName, "Default Store name", "Default Store name should be the set")
-      })
-
-      it("The number of stores should equal one", async() => {
-        const getNumberOfStores()
-          assert.equal(DefaultStoreName, "Default Store name", "Default Store name should be the set")
-      })
-      */
-  })
-
-  describe("Functions", () => {
-
       it("selectStore(1) should return store ID 1", async() => {
           const selectDetail = await instance.selectStore(1)
 
@@ -62,14 +62,12 @@ contract('OnlineMP', function(accounts) {
           assert.equal(storeBalDetail.storeBal, 0, "the store balance should be zero")
       })
 
-
       it("it should let us add a store", async() => {
         const instance = await OnlineMP.new(DefaultStoreName, firstAc)
         const nameCheck = await instance.addStore()
         assert.equal(nameCheck.stores[storeId].storeName, DefaultStoreName, "the Store names should match")
         //assert.equal(event.sales, 0, "the ticket sales should be 0")
       })
-
-  })
-
+      */
+    })
 })

@@ -1,2 +1,3 @@
 # Ignore a single file
 .DS_Store
+/node_modules

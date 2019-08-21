@@ -70,6 +70,18 @@ contract OnlineMP {
     );
 
     /*
+        LogSelectStore should provide info about the store selected
+
+    event LogSelectStore(
+      uint indexed _storesId,
+      string _storesName,
+      uint256 _storeBal,
+      address _storeOwner,
+      uint[] _storeProducts
+    );
+    */
+
+    /*
         LogAddProduct should provide info about product ID, name, desc and price
     */
     event LogAddProduct(
@@ -266,6 +278,15 @@ contract OnlineMP {
         stores[_storeId].storeOwnedBy,
         stores[_storeId].products
       );
+      /*
+      emit LogSelectStore(
+        stores[_storeId].storeId,
+        stores[_storeId].storeName,
+        stores[_storeId].storeBal,
+        stores[_storeId].storeOwnedBy,
+        stores[_storeId].products
+      );
+      */
     }
 
     /*

@@ -76,9 +76,10 @@ App = {
          var storeId = storeIds[i];
          onlineMPinstance.stores(storeId.toNumber()).then(function(store) {
            App.displayStore(store[0], store[1], store[2], store[3], store[4]);
-           //return onlineMPinstance.getProductsForSale();
+           return onlineMPinstance.getProductsForSale();
          });
       }
+
       App.loading = false;
     }).catch(function(err) {
       console.error(err.message);
