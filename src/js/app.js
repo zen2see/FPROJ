@@ -115,6 +115,12 @@ App = {
     });
   },
 
+  displayProductInStore: function(prodName) {
+    // var productsTemplate = $('#productsTemplate');
+    var storesTemplate = $('#storesTemplate');
+    storesTemplate.find('.store-products').text(prodName);
+  },
+
   displayStore: function(id, name, storeBalance, storeOwner, products) {
     var storesRow = $('#storesRow');
     var etherPrice = web3.fromWei(storeBalance, "ether");
@@ -124,7 +130,8 @@ App = {
     storesTemplate.find('.store-name').text(name);
     storesTemplate.find('.store-balance').text(etherPrice + " ETH");
     storesTemplate.find('.store-owner').text(storeOwner);
-    storesTemplate.find('.store-products').text(products);
+    // storesTemplate.find('.store-products').text(products);
+    App.displayProductInStore(name);
     storesTemplate.find('.btn-buy').attr('data-id', id);
     storesTemplate.find('.btn-buy').attr('data-value', etherPrice);
     // storeOwner
@@ -162,7 +169,6 @@ App = {
     // add new product
     productsRow.append(productsTemplate.html());
   },
-
 
   addStore: function() {
     // get values from web interface
@@ -273,5 +279,3 @@ $(function() {
        App.init();
   });
 });
-
-

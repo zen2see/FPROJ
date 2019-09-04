@@ -15295,12 +15295,12 @@
         }
       },
       "links": {},
-      "address": "0x5410B9987F9E405C3685Ec0fB4adCa6662F3fd40",
-      "transactionHash": "0x10e9960ad55aab23d15d85819c65e5274fb02324597ff25924f998c4e36df949"
+      "address": "0xF938AeD5291b29d5773250f430370f7430CDe622",
+      "transactionHash": "0xef577661bcec1f63a926c06d9eebb6b952205b9ff44b34d76cf278e4a2c82684"
     }
   },
   "schemaVersion": "3.0.12",
-  "updatedAt": "2019-08-24T02:32:36.277Z",
+  "updatedAt": "2019-09-04T16:34:11.001Z",
   "devdoc": {
     "author": "zen2see",
     "methods": {},
