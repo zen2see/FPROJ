@@ -1,6 +1,36 @@
 body {
   padding-top: 40px;
   padding-bottom: 80px;
+  background: #C0C0C0;
+}
+
+.jumbotron.bckgd {
+  background: #486093;
+}
+
+.jumbotron.txt {
+  color: #FFF;
+}
+
+.panel-heading.bckgd {
+  background: #C0C0C0;
+}
+
+.panel-body.storebody {
+  /*background:#DFE7FF;*/
+  background: #DFE7FF;
+}
+
+.panel-footer.storefooter {
+  background: #DFE7FF;
+}
+
+.panel-body.productbody {
+  background: #FFF7DF;
+}
+
+.panel-footer.productfooter {
+  background: #FFF7DF
 }
 
 .footer {
@@ -9,6 +39,14 @@ body {
   bottom: 0;
   width: 100%;
   height: 114px;
+}
+
+.navbar-fixed-bottom.footer-bckgd {
+  background: #C0C0C0;
+}
+
+p.text-muted {
+  padding-top: 10px;
 }
 
 .welcome {

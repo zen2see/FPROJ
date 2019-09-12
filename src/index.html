@@ -24,7 +24,7 @@
 
 <body>
   <div class="container">
-    <div class="jumbotron text-center">
+    <div class="jumbotron bckgd txt text-center">
       <h1>Online Market Place</h1>
     </div>
     <!-- Main header -->
@@ -37,12 +37,12 @@
       </div>
      <!-- Main header body -->
       <div class="row panel panel-default">
-        <div class="panel-heading clearfix">
+        <div class="panel-heading bckgd clearfix">
           <div class="panel-title">
             <button class="btn btn-info btn-md" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
-            <button class="btn btn-info btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
-            <button class="btn btn-info btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
-            <button class="btn btn-info btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
+            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
+            <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
+            <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
           </div>
         </div>
         <ul id="events" class="collapse list-group"></ul>
@@ -60,12 +60,12 @@
   <!-- Stores template -->
   <div id="storesTemplate" style="display: none;">
     <div class="row-lg-12">
-      <div class="panel panel-default panel-articles">
+      <div class="panel panel-info panel-articles">
         <div class="panel-heading">
           <h3 class="panel-title"></h3>
         </div>
         <!-- Panel body -->
-        <div class="panel-body">
+        <div class="panel-body storebody">
           <strong>Store Id</strong>: <span class="store-id"></span><br/>
           <strong>Store Name</strong>: <span class="store-name"></span><br/>
           <strong>Store Balance</strong>: <span class="store-balance"></span><br/>
@@ -73,9 +73,9 @@
           <strong>Store Products</strong>: <span class="store-products"></span><br/>
         </div>
         <!-- Panel footer -->
-        <div class="panel-footer">
-          <button type="button" class="btn btn-primary btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
-          <button class="btn btn-primary btn-success btn-buy pull-right" data-toggle="modal" data-target="#addProduct">Add Product</button>
+        <div class="panel-footer storefooter">
+          <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
+          <button class="btn btn-success btn-buy pull-right" data-toggle="modal" data-target="#addProduct">Add Product</button>
         </div>
       </div>
     </div>
@@ -84,12 +84,12 @@
   <!-- Product template -->
   <div id="productsTemplate" style="display: none;">
     <div class="row-lg-12">
-      <div class="panel panel-default panel-articles">
+      <div class="panel panel-warning panel-articles">
         <div class="panel-heading">
           <h3 class="panel-title"></h3>
         </div>
         <!-- Panel body -->
-        <div class="panel-body">
+        <div class="panel-body productbody">
           <em>Product Id</em>: <span class="prod-id"></span><br/>
           <em>Product Name</em>: <span class="prod-name"></span><br/>
           <em>Product Description</em>: <span class="prod-desc"></span><br/>
@@ -106,9 +106,8 @@
         -->
         </div>
         <!-- Panel footer -->
-        <div class="panel-footer">
-          <button type="button" class="btn btn-primary btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
-          <button class="btn btn-primary btn-success btn-buy pull-right" data-toggle="modal" data-target="#addProduct">Add Product</button>
+        <div class="panel-footer productfooter">
+          <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
         </div>
       </div>
     </div>
@@ -248,7 +247,7 @@
 
   <!-- Main footer -->
   <div id="footer" class="container">
-    <nav class="navbar navbar-default navbar-fixed-bottom">
+    <nav class="navbar navbar-default navbar-fixed-bottom footer-bckgd">
       <div class="navbar-inner navbar-content-center text-center">
         <p class="text-muted" credit><a href="http://zen2see.com">z2s</a> - &copy; 2019 - <a href="https://twitter.com/zen2see">zen2see</a></p>
       </div>
@@ -257,7 +256,8 @@
 
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+  <script src="jq/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="js/bootstrap.min.js"></script>
   <script src="js/web3.min.js"></script>

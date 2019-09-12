@@ -76,7 +76,7 @@ App = {
          var storeId = storeIds[i];
          onlineMPinstance.stores(storeId.toNumber()).then(function(store) {
            App.displayStore(store[0], store[1], store[2], store[3], store[4]);
-           return onlineMPinstance.getProductsForSale();
+           //return onlineMPinstance.getProductsForSale();
          });
       }
 
@@ -106,6 +106,7 @@ App = {
          var prodId = productIds[i];
          onlineMPinstance.products(prodId.toNumber()).then(function(product) {
            App.displayProduct(product[0], product[1], product[2], product[3], product[4], product[5]);
+           App.displayProductInStore(product[1]);
          });
       }
       App.loading = false;
@@ -130,8 +131,8 @@ App = {
     storesTemplate.find('.store-name').text(name);
     storesTemplate.find('.store-balance').text(etherPrice + " ETH");
     storesTemplate.find('.store-owner').text(storeOwner);
-    // storesTemplate.find('.store-products').text(products);
-    App.displayProductInStore(name);
+    //storesTemplate.find('.store-products').text(se);
+    App.displayProductInStore();
     storesTemplate.find('.btn-buy').attr('data-id', id);
     storesTemplate.find('.btn-buy').attr('data-value', etherPrice);
     // storeOwner
@@ -198,9 +199,11 @@ App = {
     }).then(function(result) {
       // clear storesRow
       $('#storesRow').empty();
+      // clear poductsRow
+      $('#productsRow').empty();
       //var storeId = _storeId;
       onlineMPinstance.stores(_storeId).then(function(store) {
-        App.displayStore(store[0], store[1], store[2], store[3], store[4]);
+        App.displayStore(store[0], store[1], store[2], store[3]);
       });
       App.loading = false;
     }).catch(function(err) {
@@ -217,7 +220,7 @@ App = {
     var storesTemplate = $('#storesTemplate');
     storesTemplate.find('.store-id').val();
     if((_prodName.trim() == '') || (_prodPrice == 0)) {
-      // nothing to sell
+      // nothing to add
       return false;
     }
     App.contracts.OnlineMP.deployed().then(function(instance) {
@@ -237,9 +240,10 @@ App = {
       onlineMPinstance = instance;
       return onlineMPinstance.selectProduct(_prodId);
     }).then(function(result) {
-      // clear storesRow
+      // clear poductsRow
       $('#productsRow').empty();
-      //var storeId = _storeId;
+      // clear storesRow
+      $('#storesRow').empty();
       onlineMPinstance.products(_prodId).then(function(product) {
         App.displayProduct(product[0], product[1], product[2], product[3], product[4]);
       });
@@ -261,6 +265,7 @@ App = {
           console.error(error);
         }
         App.reloadStores();
+        App.reloadProducts();
       });
       instance.LogAddProduct({}, {}).watch(function(error, event) {
         if (!error) {
@@ -269,6 +274,7 @@ App = {
           console.error(error);
         }
         App.reloadStores();
+        App.reloadProducts();
       });
     });
   }

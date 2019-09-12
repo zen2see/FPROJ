@@ -5,7 +5,7 @@ pragma solidity >=0.5.0;
     /// @title OnlineMarketPlace project
 
     /*
-        Simple OnlineMarketPlace that operates on the blockchain.
+        Simple OnlineMarketPlace that operates on the blockchain
     */
 contract OnlineMP {
 
@@ -111,7 +111,7 @@ contract OnlineMP {
     );
 
     /*
-        Create a modifier that throws an error if the msg.sender is not the owner.
+        Create a modifier, throws an error if the msg.sender is not the owner
     */
     modifier isOwner() {
       require(
@@ -194,7 +194,7 @@ contract OnlineMP {
     {
 
     /*
-        store count
+        prod count
     */
       prodCounter++;
 
@@ -278,15 +278,16 @@ contract OnlineMP {
         stores[_storeId].storeOwnedBy,
         stores[_storeId].products
       );
-      /*
-      emit LogSelectStore(
-        stores[_storeId].storeId,
-        stores[_storeId].storeName,
-        stores[_storeId].storeBal,
-        stores[_storeId].storeOwnedBy,
-        stores[_storeId].products
-      );
-      */
+
+    /*
+        emit LogSelectStore(
+          stores[_storeId].storeId,
+          stores[_storeId].storeName,
+          stores[_storeId].storeBal,
+          stores[_storeId].storeOwnedBy,
+          stores[_storeId].products
+        );
+    */
     }
 
     /*
@@ -300,6 +301,7 @@ contract OnlineMP {
         This function gets the products for sale
     */
     function getProductsForSale() public view returns (uint[] memory) {
+
     /*
         Store product IDs
     */
@@ -316,6 +318,7 @@ contract OnlineMP {
           numberOfProductsForSale++;
         }
       }
+
     /*
         Create a forSale array
     */
@@ -325,6 +328,54 @@ contract OnlineMP {
       }
       return forSale;
     }
+
+    /*
+        This function gets the store's products by Id (can't return string[]
+        unless the experimental ABIEncoderv2 is enabled)
+
+    function getStoreProductsById (uint _storeId)
+      public
+      view
+      returns (uint[] memory) {
+
+        Store IDs
+
+      require(
+        _storeId > 0 && _storeId <= getNumberOfStores(),
+        "The store Id is not vaild"
+      );
+      uint[] memory storeProdIds = new uint[](prodCounter);
+
+      string[] memory storeProdNames = new string[](prodCounter);
+
+      uint numOfStoresProd = 0;
+
+
+        Collect IDs of stores products
+
+      for (uint i = 1; i <= prodCounter; i++) {
+        if (stores[_storeId].products[i] != 0) {
+          storeProdIds[numOfStoresProd] = stores[_storeId].products[i].prodId;
+          // storeProdNames[numOfStoresProd] = stores[_storeId].products[i].prodName;
+          numOfStoresProd++;
+        }
+      }
+
+
+
+        Create a prodIdsForSale and prodNamesForSale arrays
+
+      uint[] memory prodIdsForSale = new uint[](numOfStoresProd);
+
+      string[] memory prodNamesForSale = new string[](numOfStoresProd);
+
+      for(uint j = 0; j < numOfStoresProd; j++) {
+        prodIdsForSale[j] = storeProdIds[j];
+        prodNamesForSale[j] = storeProdNames[j];
+      }
+      return prodIdsForSale;
+    }
+    */
 
     /*
         Select a product via id
