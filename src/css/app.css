@@ -1,24 +1,91 @@
 body {
-  padding-top: 40px;
-  padding-bottom: 80px;
+  padding-top: 2.5rem;
+  padding-bottom: 5.0rem;
   background: #C0C0C0;
-}
-
-.jumbotron.bckgd {
-  background: #486093;
 }
 
 .jumbotron.txt {
   color: #FFF;
 }
 
+/* BACKGROUND */
+.jumbotron.bckgd {
+  background: #486093;
+}
+
+.card.bckgd {
+  background: #C0C0C0;
+}
+
+/* MARGIN */
+.mbzero {
+  margin-bottom: 0;
+}
+
+.mb25rem {
+  margin-bottom: .25rem;
+}
+
+.mb50rem {
+  margin-bottom: .50rem;
+}
+
+.ml25rem {
+  margin-left: .25rem;
+}
+
+/* PADDING */
+.plrzero {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.pr1rem {
+  padding-right: 1rem;
+}
+
+.ptbzero {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.p75rem {
+  padding: .75rem;
+}
+
+/* BORDER */
+.bzero {
+  border: 0;
+}
+
+ul { 
+  list-style-type: none; 
+  padding: 0;
+} 
+
+li.list-group-item {
+  line-height: 1rem;
+  padding: 0;
+  border: 0;
+}
+ 
+.bold {
+  font-weight: bold;
+}
+
+
 .panel-heading.bckgd {
   background: #C0C0C0;
 }
 
-.panel-body.storebody {
+.storesTemplate {
+  border: .25rem;
+}
+
+.card-body.storebody {
   /*background:#DFE7FF;*/
   background: #DFE7FF;
+  padding: .50rem;
 }
 
 .panel-footer.storefooter {

@@ -1,6 +1,6 @@
 // The public file for automated testing...
 
-var OnlineMP = artifacts.require('OnlineMP')
+let OnlineMP = artifacts.require('OnlineMP')
 let catchRevert = require("./exceptionsHelpers.js").catchRevert
 const BN = web3.utils.BN
 

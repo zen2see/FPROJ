@@ -1,6 +1,7 @@
-pragma solidity >=0.5.0;
+pragma solidity ^0.6.0;
 
 //import "./Ownable.sol";
+
     /// @author zen2see
     /// @title OnlineMarketPlace project
 
@@ -13,7 +14,7 @@ contract OnlineMP {
         state variables
     */
     // address storeOwner;
-    address payable public owner;
+    address payable owner;
     mapping (address => bool) public isStoreOwners;
 
     /*
@@ -28,8 +29,10 @@ contract OnlineMP {
       uint storeId;
       string storeName;
       uint256 storeBal;
-      address storeOwnedBy;
+      address payable storeOwnedBy;
       uint[] products;
+      // address payable seller;
+      // address buyer;
     }
 
     /*
@@ -37,6 +40,8 @@ contract OnlineMP {
     */
     mapping (uint => Store) public stores;
     uint storeCounter;
+    // store the stores product count (public for getter())
+    uint public storeProdCounter;
 
     /*
         @notice A Product:
@@ -58,7 +63,7 @@ contract OnlineMP {
          more state variables as a structure type..
     */
     mapping (uint => Product) public products;
-    uint prodCounter;
+    uint public prodCounter;
 
     /*
         LogAddStore should provide info about the store ID and store name
@@ -71,12 +76,12 @@ contract OnlineMP {
 
     /*
         LogSelectStore should provide info about the store selected
-
+    
     event LogSelectStore(
       uint indexed _storesId,
-      string _storesName,
+      string _storesName
       uint256 _storeBal,
-      address _storeOwner,
+      address _storeOwner
       uint[] _storeProducts
     );
     */
@@ -135,7 +140,7 @@ contract OnlineMP {
     /*
         Define a constructor.
     */
-    constructor (string memory _defaultStoreName, address _defaultAddress)
+    constructor (string memory _defaultStoreName, address payable _defaultAddress)
       public
     {
       owner = msg.sender;
@@ -145,8 +150,12 @@ contract OnlineMP {
     /*
         @notice Payable fallback
     */
-    function() external payable {
+    receive() external payable {
+    }
 
+    // kill the smart contract
+    function kill() public isOwner {
+      selfdestruct(owner);
     }
 
     /*
@@ -155,7 +164,7 @@ contract OnlineMP {
           storeName
           storeOwner
     */
-    function addStore(string memory _storeName, address _newStoreOwner)
+    function addStore(string memory _storeName, address payable _newStoreOwner)
       public
     {
 
@@ -170,7 +179,7 @@ contract OnlineMP {
       stores[storeCounter] = Store(
         storeCounter,
         _storeName,
-        0,
+        address(0),
         _newStoreOwner,
         stores[storeCounter].products
       );
@@ -210,6 +219,7 @@ contract OnlineMP {
       );
 
       stores[storeCounter].products.push(products[prodCounter].prodId);
+      storeProdCounter++;
 
       emit LogAddProduct(prodCounter, _prodName, _prodDescription, _prodPrice);
     }
@@ -271,6 +281,7 @@ contract OnlineMP {
         _storeId > 0 && _storeId <= getNumberOfStores(),
         "The store Id is not vaild"
       );
+
       return (
         stores[_storeId].storeId,
         stores[_storeId].storeName,
@@ -279,15 +290,14 @@ contract OnlineMP {
         stores[_storeId].products
       );
 
-    /*
-        emit LogSelectStore(
+      /*
+      emit LogSelectStore(
           stores[_storeId].storeId,
-          stores[_storeId].storeName,
-          stores[_storeId].storeBal,
-          stores[_storeId].storeOwnedBy,
-          stores[_storeId].products
-        );
-    */
+          stores[_storeId].storeName
+          //stores[_storeId].storeBal,
+          //stores[_storeId].storeOwnedBy
+      );
+      */
     }
 
     /*
@@ -412,8 +422,8 @@ contract OnlineMP {
           prodPrice
     */
     function buyProduct(uint _productId)
-      payable
       public
+      payable
     {
       require(
         prodCounter > 0,
@@ -431,7 +441,7 @@ contract OnlineMP {
       Product storage btproduct = products[_productId];
 
       require(
-          btproduct.purchaser == address(0x0),
+          btproduct.purchaser == address(0),
           "The product should not have been sold yet"
         );
 
@@ -452,9 +462,9 @@ contract OnlineMP {
         btproduct.purchaser = msg.sender;
 
     /*
-        purchaser makes purchase avoid re-entrancy here
+        purchaser ma es purchase avoid re-entrancy here
     */
-        btproduct.purchaser.transfer(msg.value);
+        btproduct.purchaser.transfer(msg.value); 
 
     /*
         emit LogBuyProduct event

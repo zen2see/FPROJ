@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>OnlineMP</title>
 
@@ -20,33 +20,50 @@
 
   <!-- Application -->
   <link href="css/app.css" rel="stylesheet">
+  <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
 </head>
 
 <body>
-  <div class="container">
+  <div class="container pl-0 pr-0">
     <div class="jumbotron bckgd txt text-center">
       <h1>Online Market Place</h1>
     </div>
     <!-- Main header -->
-    <div class="col-md-12" id="store-list">
-      <div class="row">
-        <div class="col-lg-12">
-          <p id="account" class="welcome pull-right"></p>
-          <p id="accountBalance" class="welcome pull-left"></p>
-        </div>
+    <div class="row bckgd">
+      <div class="col">
+        <h6 class="text-left mbzero bold">ACCOUNT:</h6>
       </div>
+      <div class="col">
+        <h6 class="text-right mbzero bold">BALANCE:</h6>
+      </div>
+    </div>
+    <div class="row bckgd" id="account-list">
+      <div class="col">
+        <p class="text-left mb25rem" id="account"></p>
+      </div>
+      <div class="col">
+        <p class="text-right mb25rem" id="accountBalance"></p>
+      </div>  
+    </div>
      <!-- Main header body -->
-      <div class="row panel panel-default">
-        <div class="panel-heading bckgd clearfix">
-          <div class="panel-title">
+      <!--<div class="row panel panel-default">-->
+        <div class="row bckgd mb50rem clearfix">
+          <div class="col">
+            <!--
             <button class="btn btn-info btn-md" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
             <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
             <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
             <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
+            -->
+            <button class="btn btn-info btn-md text-left btn-event btn-unsubscribe" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
+            <button class="btn btn-info btn-md text-left btn-event btn-subscribe" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
+            <button class="btn btn-info btn-md text-left btn-show-events" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
+            <button class="btn btn-info btn-md float-right" data-toggle="modal" data-target="#sellArticle">Sell an article</button>
           </div>
         </div>
-        <ul id="events" class="collapse list-group"></ul>
-      </div>
+        <ul id="events" class="list-group plrzero mb50rem ml1rem">
+        </ul>
+      <!--</div>-->
 
       <div id="storesRow" class="row">
         <!-- STORES LOAD HERE -->
@@ -54,18 +71,16 @@
       <div id="productsRow" class="row">
           <!-- PRODUCTS LOAD HERE -->
       </div>
-    </div>
-  </div>
+
+
 
   <!-- Stores template -->
-  <div id="storesTemplate" style="display: none;">
-    <div class="row-lg-12">
-      <div class="panel panel-info panel-articles">
-        <div class="panel-heading">
-          <h3 class="panel-title"></h3>
-        </div>
+  <div id="storesTemplate" style="display: box">
+    <div class="row-lg-12 storesTemplate">
+      <div class="card storeCardPadding">
+        
         <!-- Panel body -->
-        <div class="panel-body storebody">
+        <div class="card-body storebody">
           <strong>Store Id</strong>: <span class="store-id"></span><br/>
           <strong>Store Name</strong>: <span class="store-name"></span><br/>
           <strong>Store Balance</strong>: <span class="store-balance"></span><br/>
@@ -254,15 +269,18 @@
     </nav>
   </div>
 
+  </div>
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
   <script src="jq/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/popper.min.js"></script>
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/app.js"></script>
 </body>
 
 </html>
+ 

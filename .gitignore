@@ -1,3 +1,6 @@
 # Ignore a single file
 .DS_Store
+fproj.notes.txt
+CollectIDsnippet.odt
+src/js/truffle-contractOLD.js
 /node_modules
