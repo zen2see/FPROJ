@@ -4,8 +4,13 @@ body {
   background: #C0C0C0;
 }
 
+/* TEXT */
 .jumbotron.txt {
   color: #FFF;
+}
+
+p.text-muted {
+  padding-top: 10px;
 }
 
 /* BACKGROUND */
@@ -110,10 +115,6 @@ li.list-group-item {
 
 .navbar-fixed-bottom.footer-bckgd {
   background: #C0C0C0;
-}
-
-p.text-muted {
-  padding-top: 10px;
 }
 
 .welcome {
