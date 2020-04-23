@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity >=0.6.0 < 0.7.0;
 
 //import "./Ownable.sol";
 
@@ -144,7 +144,7 @@ contract OnlineMP {
       public
     {
       owner = msg.sender;
-      addStore(_defaultStoreName, _defaultAddress);
+      addStore(_defaultStoreName, 0, _defaultAddress);
     }
 
     /*
@@ -164,7 +164,7 @@ contract OnlineMP {
           storeName
           storeOwner
     */
-    function addStore(string memory _storeName, address payable _newStoreOwner)
+    function addStore(string memory _storeName, uint _storeBal, address payable _newStoreOwner)
       public
     {
 
@@ -179,7 +179,7 @@ contract OnlineMP {
       stores[storeCounter] = Store(
         storeCounter,
         _storeName,
-        address(0),
+        _storeBal,
         _newStoreOwner,
         stores[storeCounter].products
       );
