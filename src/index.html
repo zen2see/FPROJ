@@ -27,7 +27,8 @@
     <div class="jumbotron bckgd txt text-center">
       <h1>Online Market Place</h1>
     </div>
-    <!-- Main header -->
+
+    <!-- Main Account Header -->
     <div class="row bckgd">
       <div class="col">
         <h6 class="text-left mbzero bold">ACCOUNT:</h6>
@@ -36,240 +37,234 @@
         <h6 class="text-right mbzero bold">BALANCE:</h6>
       </div>
     </div>
-    <div class="row bckgd" id="account-list">
+    <div class="row bckgd mb50rem" id="account-list">
       <div class="col">
-        <p class="text-left mb25rem" id="account"></p>
+        <div class="text-left" id="account"></div>
       </div>
       <div class="col">
-        <p class="text-right mb25rem" id="accountBalance"></p>
+        <div class="text-right" id="accountBalance"></div>
       </div>  
     </div>
-     <!-- Main header body -->
-      <!--<div class="row panel panel-default">-->
-        <div class="row bckgd mb50rem clearfix">
-          <div class="col">
-            <!--
-            <button class="btn btn-info btn-md" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
-            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
-            <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
-            <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
-            -->
-            <button class="btn btn-info btn-md text-left btn-event btn-unsubscribe" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
-            <button class="btn btn-info btn-md text-left btn-event btn-subscribe" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
-            <button class="btn btn-info btn-md text-left btn-show-events" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
-            <button class="btn btn-info btn-md float-right" data-toggle="modal" data-target="#sellArticle">Sell an article</button>
+
+    <!-- Main Header Body -->
+    <div class="row bckgd mb1rem">
+      <div class="col">
+        <!--
+        <button class="btn btn-info btn-md" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
+        <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
+        <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
+        <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
+        -->      
+        <button class="btn btn-info btn-md text-left btn-event btn-unsubscribe" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
+        <button class="btn btn-info btn-md text-left btn-event btn-subscribe" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
+        <button class="btn btn-info btn-md text-left btn-show-events" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
+        <button class="btn btn-info btn-md float-right" data-toggle="modal" data-target="#addStore">Add a Store</button>
+      </div>
+    </div>
+ 
+    <!-- Main Event Body -->
+    <div class="row mb50rem">
+      <div class="col">
+        <ul id="events" class="collapse list-group mb1rem"></ul>
+      </div>
+    </div>
+
+    <!-- STORES LOAD HERE -->
+    <div class="row">
+      <div class="col">
+        <div id="storesRow"></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS LOAD HERE -->
+    <div class="row mb50rem">
+      <div class="col">
+        <div id="productsRow"></div>
+      </div>
+    </div>
+
+    <!-- Stores template -->
+    <div id="storesTemplate" style="display: none">
+      <div class="row-lg-12 mb50rem">
+        <div class="card">
+          <!-- Store card body -->
+          <div class="card-body storebody">
+            <strong>Store Id</strong>: <span class="store-id"></span><br/>
+            <strong>Store Name</strong>: <span class="store-name"></span><br/>
+            <strong>Store Balance</strong>: <span class="store-balance"></span><br/>
+            <strong>Store Owner</strong>: <span class="store-owner"></span><br/>
+            <strong>Store Products</strong>: <span class="store-products"></span><br/>
           </div>
-        </div>
-        <ul id="events" class="list-group plrzero mb50rem ml1rem">
-        </ul>
-      <!--</div>-->
-
-      <div id="storesRow" class="row">
-        <!-- STORES LOAD HERE -->
-      </div>
-      <div id="productsRow" class="row">
-          <!-- PRODUCTS LOAD HERE -->
-      </div>
-
-
-
-  <!-- Stores template -->
-  <div id="storesTemplate" style="display: box">
-    <div class="row-lg-12 storesTemplate">
-      <div class="card storeCardPadding">
-        
-        <!-- Panel body -->
-        <div class="card-body storebody">
-          <strong>Store Id</strong>: <span class="store-id"></span><br/>
-          <strong>Store Name</strong>: <span class="store-name"></span><br/>
-          <strong>Store Balance</strong>: <span class="store-balance"></span><br/>
-          <strong>Store Owner</strong>: <span class="store-owner"></span><br/>
-          <strong>Store Products</strong>: <span class="store-products"></span><br/>
-        </div>
-        <!-- Panel footer -->
-        <div class="panel-footer storefooter">
-          <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
-          <button class="btn btn-success btn-buy pull-right" data-toggle="modal" data-target="#addProduct">Add Product</button>
+          <!-- Store card footer -->
+          <div class="card-footer storefooter">
+            <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
+            <button type="button" class="btn btn-success btn-buy pull-right" data-toggle="modal" data-target="#addProduct">Add Product</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Product template -->
-  <div id="productsTemplate" style="display: none;">
-    <div class="row-lg-12">
-      <div class="panel panel-warning panel-articles">
-        <div class="panel-heading">
-          <h3 class="panel-title"></h3>
-        </div>
-        <!-- Panel body -->
-        <div class="panel-body productbody">
-          <em>Product Id</em>: <span class="prod-id"></span><br/>
-          <em>Product Name</em>: <span class="prod-name"></span><br/>
-          <em>Product Description</em>: <span class="prod-desc"></span><br/>
-          <em>Product Price</em>: <span class="prod-price"></span><br/>
-          <em>Product Purchaser</em>: <span class="prod-purchaser"></span><br/>
-          <!--
-          <div class="d-flex flex-nowrap bd-highlight">
-            <div class="order-sm-1 p-2 bd-highlight"><strong>Product Id</strong>: <span class="prod-id"></span><br/></div>
-            <div class="order-sm-2 p-2 bd-highlight"><strong>Product Name</strong>: <span class="prod-name"></span><br/></div>
-            <div class="order-sm-3 p-2 bd-highlight"><strong>Product Description</strong>: <span class="prod-desc"></span><br/></div>
-            <div class="order-sm-4 p-2 bd-highlight"><strong>Product Price</strong>: <span class="prod-price"></span><br/></div>
-            <div class="order-sm-5 p-2 bd-highlight"><strong>Product Purchaser</strong>: <span class="prod-purchaser"></span><br/></div>
+    <!-- Product template -->
+    <div id="productsTemplate" style="display: none">
+      <div class="row-lg-12 mb50rem">
+        <div class="card card-warning">
+          <!-- Product card body -->
+          <div class="card-body productbody"> 
+            <strong><em>Product Id</em>: <span class="product-id"></span></strong><br/>
+            <strong><em>Product Name</em>: <span class="product-name"></span></strong><br/>
+            <strong><em>Product Description</em>: <span class="product-desc"></span></strong><br/>
+            <strong><em>Product Price</em>: <span class="product-price"></span></strong><br/>
+            <strong><em>Product Purchaser</em>: <span class="product-purchaser"></span></strong><br/>
           </div>
-        -->
-        </div>
-        <!-- Panel footer -->
-        <div class="panel-footer productfooter">
-          <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
+          <!-- Product card footer -->
+          <div class="card-footer productfooter">
+            <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Modal form to add a store -->
-  <div class="modal fade" id="addStore" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add a store</h4>
-        </div>
+    <!-- Modal form to add a store -->
+    <div class="modal fade" id="addStore" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add a store</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
           <!-- Modal body -->
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <form>
-                <div class="form-group">
-                  <label for="store_name">Store name</label>
-                  <input type="text" class="form-control" id="store_name" placeholder="Enter the name of your store" maxlength="40" >
-                </div>
-              </form>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                <form>
+                  <div class="form-group">
+                    <label for="store_name">Store name</label>
+                    <input type="text" class="form-control" id="store_name" placeholder="Enter the name of your store" maxlength="40" >
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.addStore(); return false;">Submit</button>
-          <button type="button" class="btn" data-dismiss="modal">Close</button>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.addStore(); return false;">Submit</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Modal form to select a store -->
-  <div class="modal fade" id="selectStore" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Select a store</h4>
-        </div>
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <form>
-                <div class="form-group">
-                  <label for="store_name">Store Id</label>
-                  <input type="text" class="form-control" id="store_id" placeholder="Enter the store Id">
-                </div>
-              </form>
+    <!-- Modal form to select a store -->
+    <div class="modal fade" id="selectStore" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Select a store</h4>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                <form>
+                  <div class="form-group">
+                    <label for="store_name">Store Id</label>
+                    <input type="text" class="form-control" id="store_id" placeholder="Enter the store Id">
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.selectStore(); return false;">Submit</button>
-          <button type="button" class="btn" data-dismiss="modal">Close</button>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.selectStore(); return false;">Submit</button>
+            <button type="button" class="btn" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Modal form to add a product -->
-  <div class="modal fade" id="addProduct" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add Product</h4><strong>This is for Store Id</strong>: <span class="store-id"></span><br/>
-        </div>
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <form>
-                <div class="form-group">
-                  <label for="product_name">Product Name</label>
-                  <input type="text" class="form-control" id="product_name" placeholder="Enter the name of your product" maxlength="40">
-                </div>
-                <div class="form-group">
-                  <label for="description">Product Description</label>
-                  <textarea type="text" class="form-control vresize" id="product_description" placeholder="Describe your product" maxlength="80"></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="price">Price in ETH</label>
-                  <input type="number" class="form-control" id="product_price" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
-                </div>
-              </form>
+    <!-- Modal form to add a product -->
+    <div class="modal fade" id="addProduct" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Product</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                <form>
+                  <div class="form-group">
+                    <label for="product_name">Product Name</label>
+                    <input type="text" class="form-control" id="product_name" placeholder="Enter the name of your product" maxlength="40">
+                  </div>
+                  <div class="form-group">
+                    <label for="description">Product Description</label>
+                    <textarea type="text" class="form-control vresize" id="product_description" placeholder="Describe your product" maxlength="80"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="price">Price in ETH</label>
+                    <input type="number" class="form-control" id="product_price" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.addProduct(); return false;">Submit</button>
-          <button type="button" class="btn" data-dismiss="modal">Close</button>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.addProduct(); return false;">Submit</button>
+            <button type="button" class="btn" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Modal form to select a product -->
-  <div class="modal fade" id="selectProduct" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Select a Product</h4>
-        </div>
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <form>
-                <div class="form-group">
-                  <label for="product_name">Product Id</label>
-                  <input type="text" class="form-control" id="prod_id" placeholder="Enter the product Id">
-                </div>
-              </form>
+    <!-- Modal form to select a product -->
+    <div class="modal fade" id="selectProduct" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Select a Product</h4>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                <form>
+                  <div class="form-group">
+                    <label for="product_name">Product Id</label>
+                    <input type="text" class="form-control" id="prod_id" placeholder="Enter the product Id">
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.selectProduct(); return false;">Submit</button>
-          <button type="button" class="btn" data-dismiss="modal">Close</button>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.selectProduct(); return false;">Submit</button>
+            <button type="button" class="btn" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Main footer -->
-  <div id="footer" class="container">
-    <nav class="navbar navbar-default navbar-fixed-bottom footer-bckgd">
-      <div class="navbar-inner navbar-content-center text-center">
-        <p class="text-muted" credit><a href="http://zen2see.com">z2s</a> - &copy; 2019 - <a href="https://twitter.com/zen2see">zen2see</a></p>
+    <!-- Main footer -->
+    <footer id="footer" class="footer fixed-bottom">
+      <div class="navbar-expand d-print text-center border-top">
+        <div class="text-muted" credit><a href="https://twitter.com/zen2see">zen2see</a> - &copy; 2020 - <a href="http://zen2see.com">z2s</a></div>
       </div>
-    </nav>
+    </footer>
   </div>
 
-  </div>
-
+    
+  
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
   <script src="jq/jquery.min.js"></script>
@@ -280,6 +275,5 @@
   <script src="js/truffle-contract.js"></script>
   <script src="js/app.js"></script>
 </body>
-
 </html>
  

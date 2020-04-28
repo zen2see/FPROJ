@@ -6,5 +6,5 @@ module.exports = function(deployer, network, accounts) {
     } else {
         defaultAccount = accounts[1]
     }
-  deployer.deploy(OnlineMP, "Default Store Name", defaultAccount);
+  deployer.deploy(OnlineMP);
 };

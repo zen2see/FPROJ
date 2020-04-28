@@ -22,26 +22,25 @@ contract OnlineMP {
         Store id: @storeId
         Store name: @storeName
         Store balance: @storeBal
-        Store owner: @storeOwnedBy
+        Store owner: @storeOwner
         Store products: @products
     */
     struct Store {
       uint storeId;
       string storeName;
       uint256 storeBal;
-      address payable storeOwnedBy;
+      address payable storeOwner;
       uint[] products;
-      // address payable seller;
-      // address buyer;
     }
 
     /*
         state variables, declare a store as a structure type through mapping
     */
     mapping (uint => Store) public stores;
+    // store the stores count (public for getter())
     uint storeCounter;
     // store the stores product count (public for getter())
-    uint public storeProdCounter;
+    uint storeProdCounter;
 
     /*
         @notice A Product:
@@ -63,23 +62,23 @@ contract OnlineMP {
          more state variables as a structure type..
     */
     mapping (uint => Product) public products;
-    uint public prodCounter;
+    uint prodCounter;
 
     /*
-        LogAddStore should provide info about the store ID and store name
+        LogAddStore should provide info about the store ID, store owner and store name
     */
     event LogAddStore(
-      uint indexed _storesId,
-      string _storesName,
-      address _storeOwner
+      uint indexed _storeId,
+      address indexed _storeOwner,
+      string _storeName  
     );
 
     /*
         LogSelectStore should provide info about the store selected
     
     event LogSelectStore(
-      uint indexed _storesId,
-      string _storesName
+      uint indexed _storeId,
+      string _storeName
       uint256 _storeBal,
       address _storeOwner
       uint[] _storeProducts
@@ -91,22 +90,23 @@ contract OnlineMP {
     */
     event LogAddProduct(
       uint indexed _prodId,
-      string _productName,
+      string _prodName,
       string _prodDescription,
       uint256 _prodPrice
     );
 
     /*
-        LogSellProduct should provide info about the product ID and product name
+        LogSellProduct should provide info about the product ID, seller (store owner), product name and price
     */
     event LogSellProduct(
+      uint indexed _storeID,
       address indexed _storeOwner,
       string  _productName,
       uint256 _price
     );
 
     /*
-        LogBuyTickets should provide info about purchaser and # of prod bought
+        LogBuyTickets should provide info about prod ID, seller (store owner), purchaser, prod name and prod price
     */
     event LogBuyProduct(
       uint indexed _productId,
@@ -139,12 +139,18 @@ contract OnlineMP {
 
     /*
         Define a constructor.
-    */
+    
     constructor (string memory _defaultStoreName, address payable _defaultAddress)
       public
     {
       owner = msg.sender;
       addStore(_defaultStoreName, 0, _defaultAddress);
+    }
+    */
+    constructor()
+      public
+    {
+      owner = msg.sender;
     }
 
     /*
@@ -164,7 +170,7 @@ contract OnlineMP {
           storeName
           storeOwner
     */
-    function addStore(string memory _storeName, uint _storeBal, address payable _newStoreOwner)
+    function addStore(string memory _storeName)
       public
     {
 
@@ -179,12 +185,12 @@ contract OnlineMP {
       stores[storeCounter] = Store(
         storeCounter,
         _storeName,
-        _storeBal,
-        _newStoreOwner,
+        msg.sender.balance,
+        msg.sender,
         stores[storeCounter].products
-      );
+      ); 
 
-      emit LogAddStore(storeCounter, _storeName, _newStoreOwner);
+      emit LogAddStore(storeCounter, msg.sender, _storeName);
     }
 
     /*
@@ -201,6 +207,14 @@ contract OnlineMP {
     )
       public
     {
+    
+    /*
+    require(
+        products[prodCounter].purchaser == 
+        product.purchaser == address(0),
+        "The product should not have been sold yet"
+      );
+    */
 
     /*
         prod count
@@ -235,7 +249,7 @@ contract OnlineMP {
         This function gets all the stores
     */
     function getStoresOwned() public view returns (uint[] memory) {
-
+      
     /*
         Store IDs
     */
@@ -247,7 +261,7 @@ contract OnlineMP {
         Collect IDs of stores available
     */
       for (uint i = 1; i <= storeCounter; i++) {
-        if (stores[i].storeOwnedBy != address(0)) {
+        if (stores[i].storeOwner != address(0)) {
           storeIds[numberOfStores] = stores[i].storeId;
           numberOfStores++;
         }
@@ -286,7 +300,7 @@ contract OnlineMP {
         stores[_storeId].storeId,
         stores[_storeId].storeName,
         stores[_storeId].storeBal,
-        stores[_storeId].storeOwnedBy,
+        stores[_storeId].storeOwner,
         stores[_storeId].products
       );
 
@@ -441,20 +455,24 @@ contract OnlineMP {
       Product storage btproduct = products[_productId];
 
       require(
-          btproduct.purchaser == address(0),
-          "The product should not have been sold yet"
-        );
+        storeProdCounter > 0,
+       "There should be at least one product in the store"
+      );
 
-    /*
-        require(
-          stores[_storesId].storeOwner != msg.sender,
-          "The store owner should not be allowed to buy products"
-        );
-    */
-        require(
-          msg.value >= btproduct.prodPrice,
-          "The msg.value covers to the product price"
-        );
+      require(
+        btproduct.purchaser == address(0),
+        "The product should not have been sold yet"
+      );
+     
+      require(
+        btproduct.purchaser != msg.sender,
+        "The store owner should not be allowed to buy their own products"
+      );
+  
+      require(
+        btproduct.prodPrice == msg.value,
+          "The msg.value does not match product price"
+      );
 
     /*
         update purchaser
