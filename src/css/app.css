@@ -1,16 +1,16 @@
 /** START FROPJ **/
 
-body {
+html, body {
   padding-top: 2.5rem;
-  padding-bottom: 1.5rem;
   background: #C0C0C0;
+  height: 100%
 }
 
 /* TEXT */
 .txt {
   color: #FFF;
 }
-
+ 
 p.text-muted {
   padding-top: 10px;
 }
@@ -26,6 +26,11 @@ p.text-muted {
 
 .card.bckgd {
   background: #C0C0C0;
+}
+
+/* CONTAINER */ 
+.container.height {
+  min-height: 100%;
 }
 
 /* MARGIN */
@@ -88,8 +93,16 @@ p.text-muted {
   padding-top: .25rem;
 }
 
-.p75rem {
-  padding: .75rem;
+.pb50rem {
+  padding-bottom: .50rem;
+}
+
+.pb75rem {
+  padding-bottom: .75rem;
+}
+
+.pb1rem {
+  padding-bottom: 1rem;
 }
 
 /* BORDER */
@@ -152,15 +165,7 @@ li.list-group-item {
 
 /* MAIN FOOTER */
 .footer {
-  position: fixed-bottom;
-  left: 0;
-  bottom: 0;
   width: 100%;
- 
-}
-
-.navbar-fixed-bottom.footer-bckgd {
-  background: #C0C0C0;
 }
 
 .welcome {

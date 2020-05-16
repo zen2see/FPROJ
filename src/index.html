@@ -23,10 +23,10 @@
 </head>
 
 <body>
-  <div class="container pl-0 pr-0">
+  <main role="main" class="container height pl-0 pr-0">
     <div class="jumbotron bckgd txt text-center">
       <h1>Online Market Place</h1>
-    </div>
+    </div> 
 
     <!-- Main Account Header -->
     <div class="row bckgd">
@@ -55,10 +55,14 @@
         <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
         <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
         -->      
-        <button class="btn btn-info btn-md text-left btn-event btn-unsubscribe" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
-        <button class="btn btn-info btn-md text-left btn-event btn-subscribe" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
-        <button class="btn btn-info btn-md text-left btn-show-events" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
-        <button class="btn btn-info btn-md float-right" data-toggle="modal" data-target="#addStore">Add a Store</button>
+        <button class="btn btn-warning btn-md text-left" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
+        <button class="btn btn-info btn-md text-left" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
+        <button class="btn btn-info btn-md text-left" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
+        <button class="btn btn-info btn-md" onclick="App.reloadStores(); return false;">Show Stores</button>
+        <button class="btn btn-info btn-md" onclick="App.reloadProducts(); return false;">Show Products</button>
+        <button class="btn btn-success btn-md float-right ml25rem" data-toggle="modal" data-target="#addStore">Add a Store</button>
+        <button class="btn btn-success btn-md float-right" data-toggle="modal" data-target="#addStoreOwner">Add a Store Owner</button>
+        
       </div>
     </div>
  
@@ -115,10 +119,42 @@
             <strong><em>Product Description</em>: <span class="product-desc"></span></strong><br/>
             <strong><em>Product Price</em>: <span class="product-price"></span></strong><br/>
             <strong><em>Product Purchaser</em>: <span class="product-purchaser"></span></strong><br/>
+            <strong><em>Store Id</em>: <span class="store-idp"></span></strong><br/>
           </div>
           <!-- Product card footer -->
           <div class="card-footer productfooter">
             <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal form to add a storeOwner -->
+    <div class="modal fade" id="addStoreOwner" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add a store Owner</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                <form>
+                  <div class="form-group">
+                    <label for="store_owner">Owner address</label>
+                    <input type="text" class="form-control" id="store_owner" placeholder="Add store owner address" maxlength="42" >
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-success" data-dismiss="modal" onclick="App.addStoreOwner(); return false;">Submit</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -255,16 +291,15 @@
         </div>
       </div>
     </div>
-    <!-- Main footer -->
-    <footer id="footer" class="footer fixed-bottom">
-      <div class="navbar-expand d-print text-center border-top">
-        <div class="text-muted" credit><a href="https://twitter.com/zen2see">zen2see</a> - &copy; 2020 - <a href="http://zen2see.com">z2s</a></div>
-      </div>
-    </footer>
-  </div>
+  </main>
 
-    
-  
+  <!-- Main footer -->
+  <footer class="footer mt-auto border-top pb1rem">
+    <div class="container">
+      <div class="text-muted text-center" credit><a>zen2see</a> - &copy; 2019 - <a href="https://twitter.com/zen2see">z2s</a></div>
+    </div>
+ </footer>
+          
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
   <script src="jq/jquery.min.js"></script>

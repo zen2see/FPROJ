@@ -52,6 +52,7 @@ App = {
   listenToEvents: async () => {
     const onlineMPInstance = await App.contracts.OnlineMP.deployed(); 
     if (App.logAddStoreEventListener == null) {
+      console.log("subscribed to add store events");
       App.logAddStoreEventListener = onlineMPInstance
       .LogAddStore({fromBlock: '0'})
       .on("data", event => {
@@ -59,12 +60,14 @@ App = {
         $('#events').append('<li class="list-group-item" id="' +
         event.id + '">' + " * " + event.returnValues._storeName + ' has been added</li>');
         App.reloadStores();
+        App.reloadProducts();
       })
       .on("error", error => {
         console.error(error);
       });
     }
     if (App.logAddProductEventListener == null) {
+      console.log("subscribed to add product events");
       App.logAddProductEventListener = onlineMPInstance
       .LogAddProduct({fromBlock: '0'})
       .on("data", event => {
@@ -72,6 +75,7 @@ App = {
         $('#events').append('<li class="list-group-item" id="' +
         event.id + '">' + " * " + event.returnValues._prodName + ' has been added</li>');
         App.reloadProducts();
+        App.reloadStores();
       })
       .on("error", error => {
         console.error(error);
@@ -84,12 +88,12 @@ App = {
 
   stopListeningToEvents: async () => {
     if (App.logAddStoreEventListener != null) {
-      console.log("unsubscribe from add store events");
+      console.log("unsubscribed from add store events");
       await App.logAddStoreEventListener.removeAllListeners();
       App.logAddStoreEventListener = null;
     }
     if (App.logAddProductEventListener != null) {
-      console.log("unsubscribe from add product events");
+      console.log("unsubscribed from add product events");
       await App.logAddProductEventListener.removeAllListeners();
       App.logAddProductEventListener = null;
     }
@@ -99,11 +103,30 @@ App = {
     $('.btn-show-events').hide();
   },
   
+  addStoreOwner: async () => {
+    // get values from web interface
+    const _newStoreOwner = $('#store_owner').val();
+    // const _storeOwner = App.account[0];
+    // var _price = web3.toWei(parseFloat($('#article_price').val() || 0), "ether");
+    if (_newStoreOwner.trim() == '') {
+      // newStoreOwner cannot be empty
+      return false;
+    }
+    App.contracts.OnlineMP.deployed().then(function(instance) {
+      return instance.addStoreOwner(_newStoreOwner, {
+        from: App.account,
+        gas: 500000
+      });
+    }).then(function(result) {
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+
   addStore: async () => {
     // get values from web interface
     const _storeName = $('#store_name').val();
     // const _storeOwner = App.account[0];
-    // var _price = web3.toWei(parseFloat($('#article_price').val() || 0), "ether");
     if (_storeName.trim() == '') {
       // storename cannot be empty
       return false;
@@ -119,7 +142,7 @@ App = {
     });
   },
 
-  selectStore: () => {
+  selectStore: async () => {
     const _storeId = $('#store_id').val();
     App.contracts.OnlineMP.deployed().then(function(instance) {
       onlineMPinstance = instance;
@@ -142,8 +165,6 @@ App = {
 
   addProduct: async () => {
     // get values from web interface
-    var storesTemplate = $('#storesTemplate'); 
-    storesTemplate.find('#store-id').val();
     const _prodName = $('#product_name').val();
     const _prodDesc = $('#product_description').val();
     const _prodPriceValue = parseFloat($('#product_price').val());
@@ -282,7 +303,7 @@ App = {
     storesRow.append(storesTemplate.html());
   },
 
-  displayProduct: (prodId, prodName, prodDescription, prodPrice, prodPurchaser) => {
+  displayProduct: (prodId, prodName, prodDescription, prodPrice, prodPurchaser, storeIdp) => {
     const productsRow = $('#productsRow');
     const etherProdPrice = web3.utils.fromWei(prodPrice, "ether");
     const productsTemplate = $('#productsTemplate');
@@ -292,6 +313,7 @@ App = {
     productsTemplate.find('.product-desc').text(prodDescription)
     productsTemplate.find('.product-price').text(etherProdPrice + " ETH");
     productsTemplate.find('.product-purchaser').text(prodPurchaser);
+    productsTemplate.find('.store-idp').text(storeIdp);
     productsTemplate.find('.btn-buy').attr('data-id', prodId);
     productsTemplate.find('.btn-buy').attr('data-value', etherProdPrice);
     // storeOwner

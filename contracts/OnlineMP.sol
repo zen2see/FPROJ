@@ -1,6 +1,6 @@
 pragma solidity >=0.6.0 < 0.7.0;
 
-//import "./Ownable.sol";
+import "./Ownable.sol";
 
     /// @author zen2see
     /// @title OnlineMarketPlace project
@@ -8,13 +8,15 @@ pragma solidity >=0.6.0 < 0.7.0;
     /*
         Simple OnlineMarketPlace that operates on the blockchain
     */
-contract OnlineMP {
-
+contract OnlineMP is Ownable {
     /*
         state variables
     */
-    // address storeOwner;
-    address payable owner;
+    
+    // storeId assigned to each product
+    uint storeIdp;
+
+    // address storeOwners mapping;
     mapping (address => bool) public isStoreOwners;
 
     /*
@@ -56,6 +58,7 @@ contract OnlineMP {
       string prodDescription;
       uint256 prodPrice;
       address payable purchaser;
+      uint storeIdp;
     }
 
     /*
@@ -92,7 +95,8 @@ contract OnlineMP {
       uint indexed _prodId,
       string _prodName,
       string _prodDescription,
-      uint256 _prodPrice
+      uint256 _prodPrice,
+      uint _storeIdp
     );
 
     /*
@@ -116,17 +120,6 @@ contract OnlineMP {
     );
 
     /*
-        Create a modifier, throws an error if the msg.sender is not the owner
-    */
-    modifier isOwner() {
-      require(
-        msg.sender == owner,
-        "Only owner can call this function."
-        );
-        _;
-    }
-
-    /*
         Create a modifier that throws an error if the address !storeOwner
     */
     modifier isStoreOwner(address _isStoreOwner) {
@@ -147,10 +140,15 @@ contract OnlineMP {
       addStore(_defaultStoreName, 0, _defaultAddress);
     }
     */
+    /* 
+        Calling the Ownable constructor to insure that the address deploying this contract is 
+         regsitered as owner
+    */
     constructor()
       public
+      Ownable()
     {
-      owner = msg.sender;
+      
     }
 
     /*
@@ -160,8 +158,18 @@ contract OnlineMP {
     }
 
     // kill the smart contract
-    function kill() public isOwner {
-      selfdestruct(owner);
+    function kill() public onlyOwner {
+      selfdestruct(msg.sender);
+    }
+
+    /*
+        This function adds an address as a store owner
+    */
+    function addStoreOwner(address _newStoreOwner)
+      public
+      onlyOwner
+    {
+      isStoreOwners[_newStoreOwner] = true;
     }
 
     /*
@@ -172,6 +180,7 @@ contract OnlineMP {
     */
     function addStore(string memory _storeName)
       public
+      onlyOwner
     {
 
     /*
@@ -199,6 +208,7 @@ contract OnlineMP {
           prodName
           prodDescription
           prodPrice
+          storeId
     */
     function addProduct(
       string memory _prodName,
@@ -220,7 +230,11 @@ contract OnlineMP {
         prod count
     */
       prodCounter++;
-
+    
+    /*
+      obtain storeId
+    */
+      storeIdp = stores[storeCounter].storeId;
     /*
         update via storeId
     */
@@ -229,13 +243,14 @@ contract OnlineMP {
         _prodName,
         _prodDescription,
         _prodPrice,
-        msg.sender
+        msg.sender,
+        storeIdp
       );
 
       stores[storeCounter].products.push(products[prodCounter].prodId);
       storeProdCounter++;
 
-      emit LogAddProduct(prodCounter, _prodName, _prodDescription, _prodPrice);
+      emit LogAddProduct(prodCounter, _prodName, _prodDescription, _prodPrice, storeIdp);
     }
 
     /*
