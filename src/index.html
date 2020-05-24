@@ -55,11 +55,11 @@
         <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
         <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
         -->      
-        <button class="btn btn-warning btn-md text-left" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
-        <button class="btn btn-info btn-md text-left" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
-        <button class="btn btn-info btn-md text-left" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
-        <button class="btn btn-info btn-md" onclick="App.reloadStores(); return false;">Show Stores</button>
-        <button class="btn btn-info btn-md" onclick="App.reloadProducts(); return false;">Show Products</button>
+        <button class="btn btn-warning btn-md text-left btn-unsubscribe" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
+        <button class="btn btn-warning btn-md text-left btn-subscribe bold" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
+        <button class="btn btn-info btn-md text-left hoverFocus" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Show Events</button>
+        <button class="btn btn-info btn-md" onclick="App.reloadStores(); return false;" data-toggle="collapse" data-target="#storesRow" aria-expanded="false" aria-controls="storesRow">Show Stores</button>
+        <button class="btn btn-info btn-md" onclick="App.reloadProducts(); return false;" data-toggle="collapse" data-target="#productsRow" aria-expanded="false" aria-controls="productsRow">Show Products</button>
         <button class="btn btn-success btn-md float-right ml25rem" data-toggle="modal" data-target="#addStore">Add a Store</button>
         <button class="btn btn-success btn-md float-right" data-toggle="modal" data-target="#addStoreOwner">Add a Store Owner</button>
         
@@ -118,7 +118,7 @@
             <strong><em>Product Name</em>: <span class="product-name"></span></strong><br/>
             <strong><em>Product Description</em>: <span class="product-desc"></span></strong><br/>
             <strong><em>Product Price</em>: <span class="product-price"></span></strong><br/>
-            <strong><em>Product Purchaser</em>: <span class="product-purchaser"></span></strong><br/>
+            <strong><em>Product Owner</em>: <span class="product-owner"></span></strong><br/>
             <strong><em>Store Id</em>: <span class="store-idp"></span></strong><br/>
           </div>
           <!-- Product card footer -->
@@ -296,7 +296,7 @@
   <!-- Main footer -->
   <footer class="footer mt-auto border-top pb1rem">
     <div class="container">
-      <div class="text-muted text-center" credit><a>zen2see</a> - &copy; 2019 - <a href="https://twitter.com/zen2see">z2s</a></div>
+      <div class="text-muted text-center" credit><a>zen2see</a> - &copy; 2020 - <a href="https://twitter.com/zen2see">z2s</a></div>
     </div>
  </footer>
           

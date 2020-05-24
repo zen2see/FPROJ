@@ -32,7 +32,12 @@ App = {
   displayAccountInfo: async () => {
     const accounts = await window.web3.eth.getAccounts();
     App.account = accounts[0];
-    $('#account').text(App.account);
+    //dspAccountBeg = text(App.account).slice(0, 4);
+    //dspAccountEnd = text(App.account).slice(-4);
+    dspAccountBeg = App.account
+    console.log(web3.utils.isAddress(App.account));
+    console.log(App.account.slice(0,7) + "...." + App.account.slice(-4));
+    $('#account').text(App.account.slice(0,7) + "...." + App.account.slice(-4));
     const balance = await window.web3.eth.getBalance(App.account);
     $('#accountBalance').text(window.web3.utils.fromWei(balance, "ether") + " ETH");
   },
@@ -44,7 +49,8 @@ App = {
       App.contracts.OnlineMP = TruffleContract(onlineMPArtifact);
       App.contracts.OnlineMP.setProvider(window.web3.currentProvider);
       App.listenToEvents();
-      return App.reloadProducts();
+      App.reloadStores();
+      return 
     });
   },   
 
@@ -58,7 +64,7 @@ App = {
       .on("data", event => {
         $('#' + event.id).remove();
         $('#events').append('<li class="list-group-item" id="' +
-        event.id + '">' + " * " + event.returnValues._storeName + ' has been added</li>');
+        event.id + '">' + " * " + event.returnValues._storeName + ' has been added as a store</li>');
         App.reloadStores();
         App.reloadProducts();
       })
@@ -73,7 +79,22 @@ App = {
       .on("data", event => {
         $('#' + event.id).remove();
         $('#events').append('<li class="list-group-item" id="' +
-        event.id + '">' + " * " + event.returnValues._prodName + ' has been added</li>');
+        event.id + '">' + " * " + event.returnValues._prodName + ' has been added as a product</li>');
+        App.reloadProducts();
+        App.reloadStores();
+      })
+      .on("error", error => {
+        console.error(error);
+      });
+    }
+    if (App.logStoreOwnerEventListener == null) {
+      console.log("subscribed to add store owner events");
+      App.logAddStoreOwnerEventListener = onlineMPInstance
+      .LogAddStoreOwner({fromBlock: '0'})
+      .on("data", event => {
+        $('#' + event.id).remove();
+        $('#events').append('<li class="list-group-item" id="' +
+        event.id + '">' + " * " + event.returnValues._newStoreOwner + ' has been added as a store owner</li>');
         App.reloadProducts();
         App.reloadStores();
       })
@@ -106,7 +127,6 @@ App = {
   addStoreOwner: async () => {
     // get values from web interface
     const _newStoreOwner = $('#store_owner').val();
-    // const _storeOwner = App.account[0];
     // var _price = web3.toWei(parseFloat($('#article_price').val() || 0), "ether");
     if (_newStoreOwner.trim() == '') {
       // newStoreOwner cannot be empty
@@ -126,7 +146,6 @@ App = {
   addStore: async () => {
     // get values from web interface
     const _storeName = $('#store_name').val();
-    // const _storeOwner = App.account[0];
     if (_storeName.trim() == '') {
       // storename cannot be empty
       return false;
@@ -281,19 +300,22 @@ App = {
   displayStore: (id, name, storeBalance, storeOwner, products) => {
     const storesRow = $('#storesRow');
     const etherPrice = web3.utils.fromWei(storeBalance, "ether");
-    const  storesTemplate = $('#storesTemplate');
+    const storesTemplate = $('#storesTemplate');
     storesTemplate.find('.panel-title').text(name);
     storesTemplate.find('.store-id').text(id);
     storesTemplate.find('.store-name').text(name);
     storesTemplate.find('.store-balance').text(etherPrice + " ETH");
-    // storeOwner
+    /* storeOwner OLD
     if (storeOwner = App.account) {
-      storesTemplate.find('.store-owner').text("You");
+      storesTemplate.find('.store-owner').text(storeOwner + "(You)");
       storesTemplate.find('.btn-buy').show();
     } else {
       storesTemplate.find('store-owner').text(storeOwner);
       storesTemplate.find('.btn-buy').show();
     }
+    */
+    storesTemplate.find('.store-owner').text(storeOwner.slice(0,7) + "...." + storeOwner.slice(-4));
+    storesTemplate.find('.btn-buy').show();
     // App.selectProductById(1);
     // storesTemplate.find('.store-products').text(App.selectProduct(id));
     // App.displayProductInStore();
@@ -303,7 +325,7 @@ App = {
     storesRow.append(storesTemplate.html());
   },
 
-  displayProduct: (prodId, prodName, prodDescription, prodPrice, prodPurchaser, storeIdp) => {
+  displayProduct: (prodId, prodName, prodDescription, prodPrice, prodOwner, storeIdp) => {
     const productsRow = $('#productsRow');
     const etherProdPrice = web3.utils.fromWei(prodPrice, "ether");
     const productsTemplate = $('#productsTemplate');
@@ -312,18 +334,21 @@ App = {
     productsTemplate.find('.product-name').text(prodName);
     productsTemplate.find('.product-desc').text(prodDescription)
     productsTemplate.find('.product-price').text(etherProdPrice + " ETH");
-    productsTemplate.find('.product-purchaser').text(prodPurchaser);
+    productsTemplate.find('.product-owner').text(prodOwner.slice(0,7) + "...." + prodOwner.slice(-4));
     productsTemplate.find('.store-idp').text(storeIdp);
     productsTemplate.find('.btn-buy').attr('data-id', prodId);
     productsTemplate.find('.btn-buy').attr('data-value', etherProdPrice);
-    // storeOwner
-    if (productPurchaser = App.account) {
-      productsTemplate.find('.prod-purchaser').text('You');
+    /* prodOwner OLD
+    if (product = App.account) {
+      productsTemplate.find('.product-owner').text('You');
       productsTemplate.find('.btn-buy').show();
     } else {
-      productsTemplate.find('prod-purchaser').text('prodPurchaser');
+      productsTemplate.find('product-owner').text(prodOwner);
       productsTemplate.find('.btn-buy').show();
     }
+    */
+    productsTemplate.find('product-owner').text(prodOwner);
+    productsTemplate.find('.btn-buy').show();
     // add new product
     productsRow.append(productsTemplate.html());
   },
