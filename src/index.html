@@ -23,6 +23,7 @@
 </head>
 
 <body>
+  <!-- Title inside of jumbotron -->
   <main role="main" class="container height pl-0 pr-0">
     <div class="jumbotron bckgd txt text-center">
       <h1>Online Market Place</h1>
@@ -53,7 +54,6 @@
         <button class="btn btn-info btn-md" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Event Log</button>
         <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#selectStore">Select Store</button>
         <button class="btn btn-success btn-md" data-toggle="modal" data-target="#selectProduct">Select Product</button>
-        <button class="btn btn-primary btn-md pull-right" data-toggle="modal" data-target="#addStore">Add Store</button>
         -->      
         <button class="btn btn-warning btn-md text-left btn-unsubscribe" onclick="App.stopListeningToEvents(); return false;">Unsubscribe</button>
         <button class="btn btn-warning btn-md text-left btn-subscribe bold" style="display: none" onclick="App.listenToEvents(); return false;">Subscribe</button>
@@ -67,7 +67,7 @@
     </div>
  
     <!-- Main Event Body -->
-    <div class="row mb50rem">
+    <div class="row mb50rem bdrtop">
       <div class="col">
         <ul id="events" class="collapse list-group mb1rem"></ul>
       </div>
@@ -126,6 +126,30 @@
             <button type="button" class="btn btn-success btn-buy" onclick="App.buyProduct(); return false;">Buy Product</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal for information messages -->
+    <div class="modal" id="infoModal" tabindex="0" role="dialog">
+      <div class="modal-dialog" role="dialog">
+        <!-- Modal content -->
+          <div class="modal-content infoContentBkgd">
+            <div class="modal-header">
+              <h5 class="modal-title infoTitleTxt" id="infoTitle">Account just changed</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body infoBody infoBodyTxt">
+              <div id="infoBodyTxt">Please note: Account actions are permission based.</div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>  
       </div>
     </div>
 

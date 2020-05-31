@@ -118,7 +118,7 @@ contract OnlineMP is Ownable {
     event LogSellProduct(
         uint indexed _storeID,
         address indexed _storeOwner,
-        string  _productName,
+        string  indexed _productName,
         uint256 _price
     );
 
@@ -128,9 +128,10 @@ contract OnlineMP is Ownable {
     event LogBuyProduct(
         uint indexed _productId,
         address indexed _purchaser,
-        string  _productName,
+        string  indexed _productName,
         uint256 _price
     );
+
     /**
      *  @notice LogMsgData should provide the MsgData
      */
@@ -143,6 +144,13 @@ contract OnlineMP is Ownable {
      */
     event LogAddStoreOwner(
         address indexed _newStoreOwner
+    );
+
+    /**
+     *  @notice LogAdminFail should provide info about Admin rights issue
+     */
+    event LogAdminFail(
+        address indexed _isAdminFail
     );
 
     /**
@@ -225,8 +233,7 @@ contract OnlineMP is Ownable {
         onlyAdmin(_msgSender())
     {
         isStoreOwners[_newStoreOwner] = true;
-
-        emit LogAddStoreOwner(_newStoreOwner);
+        emit LogAddStoreOwner(_newStoreOwner); 
     }
 
 
@@ -293,7 +300,7 @@ contract OnlineMP is Ownable {
             _prodName,
             _prodDescription,
             _prodPrice,
-             msg.sender,
+            msg.sender,
             storeCounter
         );
 

@@ -28,18 +28,32 @@ App = {
       console.log("Non-ethereum browser detected try Metamask");
     }
   },
-
+  
   displayAccountInfo: async () => {
     const accounts = await window.web3.eth.getAccounts();
     App.account = accounts[0];
-    //dspAccountBeg = text(App.account).slice(0, 4);
-    //dspAccountEnd = text(App.account).slice(-4);
-    dspAccountBeg = App.account
-    console.log(web3.utils.isAddress(App.account));
-    console.log(App.account.slice(0,7) + "...." + App.account.slice(-4));
-    $('#account').text(App.account.slice(0,7) + "...." + App.account.slice(-4));
+    console.log(App.account.slice(0,6) + "...." + App.account.slice(-4));
+    $('#account').text(App.account.slice(0,6) + "...." + App.account.slice(-4));
     const balance = await window.web3.eth.getBalance(App.account);
     $('#accountBalance').text(window.web3.utils.fromWei(balance, "ether") + " ETH");
+  },
+  
+  updateAccountInfo: async () => {
+    const intervalAccounts = await window.web3.eth.getAccounts();
+    setInterval(function() {
+      // Check if account has changed
+      if (intervalAccounts[0] != App.account) {
+        console.log(intervalAccounts[0]);
+        console.log(App.account);
+        $('#infoTitle').empty();
+        $('infoMainText').empty();
+        $('#infoTitle').text("Account just changed");
+        $('infoMainText').text("Please note: Account actions are permission based.");
+        $('#infoModal').modal('show');
+        (intervalAccounts[0] = App.account);
+      }
+      App.displayAccountInfo();
+    }, 3000);
   },
 
   // create an instance of our contract
@@ -87,7 +101,7 @@ App = {
         console.error(error);
       });
     }
-    if (App.logStoreOwnerEventListener == null) {
+    if (App.logAddStoreOwnerEventListener == null) {
       console.log("subscribed to add store owner events");
       App.logAddStoreOwnerEventListener = onlineMPInstance
       .LogAddStoreOwner({fromBlock: '0'})
@@ -100,6 +114,8 @@ App = {
       })
       .on("error", error => {
         console.error(error);
+        $('#events').append(error);
+        $('#errMain').text(error); 
       });
     }
     $('.btn-subscribe').hide();
@@ -117,6 +133,11 @@ App = {
       console.log("unsubscribed from add product events");
       await App.logAddProductEventListener.removeAllListeners();
       App.logAddProductEventListener = null;
+    }
+    if (App.logAddStoreOwnerEventListener != null) {
+      console.log("unsubscribed from add store events");
+      await App.logAddStoreOwnerEventListener.removeAllListeners();
+      App.logAddStoreOwnerEventListener = null;
     }
     $('#events')[0].className = "list-group-collapse";
     $('.btn-subscribe').show();
@@ -139,7 +160,8 @@ App = {
       });
     }).then(function(result) {
     }).catch(function(err) {
-      console.error(err);
+      console.error("There was some error" + err);
+      $('#errMain').text("Problem displaying in event addStoreerror return");
     });
   },
 
@@ -314,7 +336,7 @@ App = {
       storesTemplate.find('.btn-buy').show();
     }
     */
-    storesTemplate.find('.store-owner').text(storeOwner.slice(0,7) + "...." + storeOwner.slice(-4));
+    storesTemplate.find('.store-owner').text(storeOwner.slice(0,6) + "...." + storeOwner.slice(-4));
     storesTemplate.find('.btn-buy').show();
     // App.selectProductById(1);
     // storesTemplate.find('.store-products').text(App.selectProduct(id));
@@ -334,7 +356,7 @@ App = {
     productsTemplate.find('.product-name').text(prodName);
     productsTemplate.find('.product-desc').text(prodDescription)
     productsTemplate.find('.product-price').text(etherProdPrice + " ETH");
-    productsTemplate.find('.product-owner').text(prodOwner.slice(0,7) + "...." + prodOwner.slice(-4));
+    productsTemplate.find('.product-owner').text(prodOwner.slice(0,6) + "...." + prodOwner.slice(-4));
     productsTemplate.find('.store-idp').text(storeIdp);
     productsTemplate.find('.btn-buy').attr('data-id', prodId);
     productsTemplate.find('.btn-buy').attr('data-value', etherProdPrice);
@@ -356,6 +378,6 @@ App = {
 
 $(function() {
   $(window).load(function() {
-       App.init();
+       App.init().then(App.updateAccountInfo());
   });
 });

@@ -33,7 +33,31 @@ p.text-muted {
   min-height: 100%;
 }
 
+/* INFOMSG */
+.infoContentBkgd {
+  background: #FFF3CD; 
+}
+
+.infoTitleTxt {
+  color: #6b5822;
+}
+
+.infoBodyTxt {
+  /* color: #BDA569; 
+  color: #6b5822; */
+}
+
+.infoBody {
+  margin-bottom: 0;
+}
+
 /* MARGIN */
+.mzero {
+  color: #C0C0C0;
+  margin: 0;
+
+}
+
 .mbzero {
   margin-bottom: 0;
 }
@@ -71,6 +95,23 @@ p.text-muted {
 }
 
 /* PADDING */
+
+.modal-header {
+  padding: .25rem;
+}
+
+.modal-title {
+  padding: .25rem;
+}
+
+.modal-body {
+  padding: .50rem;
+}
+
+.modal-footer {
+  padding: .25rem;
+}
+
 .plrzero {
   padding-left: 0;
   padding-right: 0;
@@ -93,6 +134,18 @@ p.text-muted {
   padding-top: .25rem;
 }
 
+.pt50rem {
+  padding-top: .50rem;
+}
+
+.pl50rem {
+  padding-left: .50rem;
+}
+
+.pbzero {
+  padding-bottom: 0rem;
+}
+
 .pb50rem {
   padding-bottom: .50rem;
 }
@@ -108,6 +161,11 @@ p.text-muted {
 /* BORDER */
 .bzero {
   border: 0;
+}
+
+.bdrtop {
+  border-color: #C0C0C0;
+  border-top-style: solid;
 }
 
 /* LIST ITEM */
