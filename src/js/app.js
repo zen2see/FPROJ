@@ -94,8 +94,8 @@ App = {
       .on("data", event => {
         $('#' + event.id).remove();
         $('#events').append('<li class="list-group-item" id="' +
-        event.id + '">' + " * " + event.returnValues._prodName + ' has been added as a product to store </li>' 
-                                + event.returnValues._storesId );
+        event.id + '">' + " * " + event.returnValues._prodName + ' has been added as a product to store' 
+        + event.returnValues._storesId + '</li>');
         App.reloadProducts();
         App.reloadStores();
       })
@@ -248,15 +248,7 @@ App = {
     const _prodPriceValue = parseFloat($('#product_price').val());
     const _prodPrePrice = isNaN(_prodPriceValue) ? "0" : _prodPriceValue.toString();
     const _prodPrice = window.web3.utils.toWei(_prodPrePrice, "ether");
-    let storeIdIndex = $('#Addbtn');
-    let _storesId = $('button').index(storeIdIndex); //$(event.target).data('_storesId');
-    // let _storesId = $("span[class='store-id']").val(); value is 0
-    // let _storesId = $('#currentStoreId').html();  value is 1 
-    // let _storesId = parseInt($('#currentStoreId').text());  value is 1
-    // let _storesId = $('#currentStoreId').attr('class'); value is store-id
-    // let _storesId = $(this).prop('currentStoreId'); gets all values 0, 1, 2, 3
-    // let _storesId = $(this).parseInt($('#currentStoreId').text());
-    //let _storesId = $(event.target).data('storeIdp');
+    const _storesId = parseInt($('#product_storeId').val());
     if(_prodName.trim() == '' || _prodPrice == "0") {
       // nothing to add
       return false;
@@ -276,7 +268,7 @@ App = {
     } catch(error) {
       console.log(error);
       $('#infoTitleTxt').text("Problem with adding product");
-      $('#infoBodyTxt').text(error);
+      $('#infoBodyTxt').text("Please check the browser console for details");
       $('#infoModal').modal('show');
     }
     App.reloadProducts();
@@ -306,7 +298,7 @@ App = {
       console.log(error);
       $('#events').append(error);
       $('#infoTitleTxt').text("Problem with purchase");
-      $('#infoBodyTxt').text(error);
+      $('#infoBodyTxt').text("Please check the browser console for details");
       $('#infoModal').modal('show');
     }
   },
@@ -348,6 +340,7 @@ App = {
     }).catch(function(err) {
       console.error(err.message);
       App.loading = false;
+
     });
   },
 
@@ -371,6 +364,10 @@ App = {
       App.loading = false;
     } catch (error) {
         console.error(error);
+        $('#events').append(error);
+        $('#infoTitleTxt').text("Error");
+        $('#infoBodyTxt').text("Please check the browser console for details");
+        $('#infoModal').modal('show');
         App.loading = false;
     }
   },
@@ -395,6 +392,10 @@ App = {
       App.loading = false;
     } catch (error) {
         console.error(error);
+        $('#events').append(error);
+        $('#infoTitleTxt').text("Error");
+        $('#infoBodyTxt').text("Please check the browser console for details");
+        $('#infoModal').modal('show');
         App.loading = false;
     }
   },
@@ -418,12 +419,8 @@ App = {
     */
     storesTemplate.find('.store-owner').text(storeOwner.slice(0,6) + "...." + storeOwner.slice(-4));
     storesTemplate.find('.btn-buy').show();
-    // App.selectProductById(1);
-    // storesTemplate.find('.store-products').text(App.selectProduct(id));
-    // App.displayProductInStore();
     storesTemplate.find('.btn-buy').attr('data-id', id);
     storesTemplate.find('.btn-buy').attr('data-value', etherPrice);
-    // add new store
     storesRow.append(storesTemplate.html());
   },
 
@@ -437,7 +434,7 @@ App = {
     productsTemplate.find('.product-desc').text(prodDescription)
     productsTemplate.find('.product-price').text(etherProdPrice + " ETH");
     productsTemplate.find('.product-owner').text(prodOwner.slice(0,6) + "...." + prodOwner.slice(-4));
-    productsTemplate.find('.store-idp').text(storeIdp);
+    productsTemplate.find('.product-storesId').text(storeIdp);
     productsTemplate.find('.btn-buy').attr('data-id', prodId);
     productsTemplate.find('.btn-buy').attr('data-value', etherProdPrice);
     /* prodOwner OLD

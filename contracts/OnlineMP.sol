@@ -56,7 +56,6 @@ contract OnlineMP is Ownable {
      *  @param Product name: @prodName
      *  @param Product desc: @prodDesc
      *  @param Product price: @prodPrice
-     *  @param Product purchaser: @purchaser
      *  @param Product owner: @prodOwner
      *  @param Product id of store it belongs to
      */
@@ -65,7 +64,6 @@ contract OnlineMP is Ownable {
         string prodName;
         string prodDesc;
         uint256 prodPrice;
-        address purchaser;
         address payable prodOwner;
         uint storeIdp;
     }
@@ -119,7 +117,6 @@ contract OnlineMP is Ownable {
     event LogBuyProduct(
         uint indexed _prodId,
         address indexed _prodOwner,
-        address indexed _purchaser,
         string  _prodName,
         uint256 _prodPrice,
         uint _storeIdp
@@ -309,7 +306,6 @@ contract OnlineMP is Ownable {
             _prodDesc,
             _prodPrice,
             address(0),
-            address(0),
             _storesId
         );
 
@@ -427,7 +423,7 @@ contract OnlineMP is Ownable {
          *  @notice Collect IDs of products still for available for sale
          */
         for (uint i = 1; i <= prodCounter; i++) {
-            if (products[i].purchaser == address(0)) {
+            if (products[i].prodOwner == address(0)) {
                 productIds[numberOfProductsForSale] = products[i].prodId;
                 numberOfProductsForSale++;
             }
@@ -497,7 +493,7 @@ contract OnlineMP is Ownable {
      *  @return product's prodName
      *  @return product's prodDescription
      *  @return product's productPrice
-     *  @return product's product.purchaser
+     *  @return product's storeIdp
      */
     function selectProduct(uint _prodId)
         public
@@ -507,7 +503,7 @@ contract OnlineMP is Ownable {
             string memory,
             string memory,
             uint256,
-            address
+            uint 
         )
     {
           require(
@@ -520,7 +516,7 @@ contract OnlineMP is Ownable {
               products[_prodId].prodName,
               products[_prodId].prodDesc,
               products[_prodId].prodPrice,
-              products[_prodId].purchaser
+              products[_prodId].storeIdp
         );
     }
 
@@ -547,6 +543,7 @@ contract OnlineMP is Ownable {
          * @notice retrieve product
          */
         Product storage btproduct = products[_prodId];
+        Store storage stproduct = 
 
         /**
          *  @notice retrieve the storeId
@@ -559,12 +556,12 @@ contract OnlineMP is Ownable {
         );
 
         require(
-            btproduct.purchaser != btproduct.prodOwner,
+            btproduct.prodOwner != _msgSender(),
             "The product owner cannot buy his own product"
         );
         
         require(
-            btproduct.purchaser == address(0),
+            btproduct.prodOwner == address(0),
             "The product should not have been sold yet"
         );
         
@@ -576,7 +573,7 @@ contract OnlineMP is Ownable {
         /**
          *  @notice update purchaser
          */
-        btproduct.purchaser = _msgSender();
+        btproduct.prodOwner = _msgSender();
 
         /**
          *  @notice purchaser makes purchase avoid re-entrancy here
@@ -596,7 +593,6 @@ contract OnlineMP is Ownable {
         emit LogBuyProduct(
             _prodId,
             btproduct.prodOwner,
-            btproduct.purchaser,
             btproduct.prodName,
             btproduct.prodPrice,
             btproduct.storeIdp
