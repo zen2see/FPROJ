@@ -26,6 +26,9 @@ App = {
     } else {
       // no dapp  browser
       console.log("Non-ethereum browser detected try Metamask");
+      $('#infoTitleTxt').text("Non-ethereum browser detected");
+      $('#infoBodyTxt').text(error);
+      $('#infoModal').modal('show');
     }
   },
   
@@ -45,10 +48,8 @@ App = {
       if (intervalAccounts[0] != App.account) {
         console.log(intervalAccounts[0]);
         console.log(App.account);
-        $('#infoTitle').empty();
-        $('infoMainText').empty();
-        $('#infoTitle').text("Account just changed");
-        $('infoMainText').text("Please note: Account actions are permission based.");
+        $('#infoTitleTxt').text("Account just changed");
+        $('#infoBodyTxt').text("Please note: Account actions are permission based.");
         $('#infoModal').modal('show');
         (intervalAccounts[0] = App.account);
       }
@@ -93,7 +94,8 @@ App = {
       .on("data", event => {
         $('#' + event.id).remove();
         $('#events').append('<li class="list-group-item" id="' +
-        event.id + '">' + " * " + event.returnValues._prodName + ' has been added as a product</li>');
+        event.id + '">' + " * " + event.returnValues._prodName + ' has been added as a product to store </li>' 
+                                + event.returnValues._storesId );
         App.reloadProducts();
         App.reloadStores();
       })
@@ -115,7 +117,28 @@ App = {
       .on("error", error => {
         console.error(error);
         $('#events').append(error);
-        $('#errMain').text(error); 
+        $('#infoTitleTxt').text("Problem with adding store owner");
+        $('#infoBodyTxt').text(error);
+        $('#infoModal').modal('show');
+      });
+    }
+    if (App.logBuyProductEventListener == null) {
+      console.log("subscribed to buy product events");
+      App.logAddBuyProductEventListener = onlineMPInstance
+      .LogBuyProduct({fromBlock: '0'})
+      .on("data", event => {
+        $('#' + event.id).remove();
+        $('#events').append('<li class="list-group-item" id="' +
+        event.id + '">' + " * " + event.returnValues._prodName + ' has been purchased</li>');
+        App.reloadProducts();
+        App.reloadStores();
+      })
+      .on("error", error => {
+        console.error(error);
+        $('#events').append(error);
+        $('#infoTitleTxt').text("Problem with purchase");
+        $('#infoBodyTxt').text(error);
+        $('#infoModal').modal('show');
       });
     }
     $('.btn-subscribe').hide();
@@ -139,6 +162,11 @@ App = {
       await App.logAddStoreOwnerEventListener.removeAllListeners();
       App.logAddStoreOwnerEventListener = null;
     }
+    if (App.logBuyProductEventListener != null) {
+      console.log("unsubscribed from buy product events");
+      await App.logBuyProductEventListener.removeAllListeners();
+      App.logBuyProductEventListener = null;
+    }
     $('#events')[0].className = "list-group-collapse";
     $('.btn-subscribe').show();
     $('.btn-unsubscribe').hide();
@@ -158,10 +186,12 @@ App = {
         from: App.account,
         gas: 500000
       });
-    }).then(function(result) {
+    }).then(result => {
     }).catch(function(err) {
       console.error("There was some error" + err);
-      $('#errMain').text("Problem displaying in event addStoreerror return");
+      $('#infoTitleTxt').text("Problem adding store owner");
+      $('#infoBodyTxt').text(error);
+      $('#infoModal').modal('show');
     });
   },
 
@@ -180,7 +210,13 @@ App = {
     }).then(function(result) {
     }).catch(function(err) {
       console.error(err);
+      $('#events').append(error);
+      $('#infoTitleTxt').text("Problem adding a store");
+      $('#infoBodyTxt').text(error);
+      $('#infoModal').modal('show');
     });
+    App.reloadStores();
+    return ;
   },
 
   selectStore: async () => {
@@ -193,7 +229,7 @@ App = {
       $('#storesRow').empty();
       // clear poductsRow
       $('#productsRow').empty();
-      var storeId = _storeId;
+      const storeId = _storeId;
         onlineMPinstance.stores(_storeId).then(function(store) {
         App.displayStore(store[0], store[1], store[2], store[3], store[4]);
       });
@@ -205,12 +241,22 @@ App = {
   },
 
   addProduct: async () => {
+    event.preventDefault();
     // get values from web interface
     const _prodName = $('#product_name').val();
-    const _prodDesc = $('#product_description').val();
+    const _prodDesc = $('#product_desc').val();
     const _prodPriceValue = parseFloat($('#product_price').val());
     const _prodPrePrice = isNaN(_prodPriceValue) ? "0" : _prodPriceValue.toString();
     const _prodPrice = window.web3.utils.toWei(_prodPrePrice, "ether");
+    let storeIdIndex = $('#Addbtn');
+    let _storesId = $('button').index(storeIdIndex); //$(event.target).data('_storesId');
+    // let _storesId = $("span[class='store-id']").val(); value is 0
+    // let _storesId = $('#currentStoreId').html();  value is 1 
+    // let _storesId = parseInt($('#currentStoreId').text());  value is 1
+    // let _storesId = $('#currentStoreId').attr('class'); value is store-id
+    // let _storesId = $(this).prop('currentStoreId'); gets all values 0, 1, 2, 3
+    // let _storesId = $(this).parseInt($('#currentStoreId').text());
+    //let _storesId = $(event.target).data('storeIdp');
     if(_prodName.trim() == '' || _prodPrice == "0") {
       // nothing to add
       return false;
@@ -221,6 +267,7 @@ App = {
         _prodName,
         _prodDesc,
         _prodPrice,
+        _storesId,
         {from: App.account, gas: 500000}
       ).on("transactionHash", hash => {
         console.log("transaction hash", hash);
@@ -228,6 +275,39 @@ App = {
       console.log("transaction receipt", transactionReceipt);
     } catch(error) {
       console.log(error);
+      $('#infoTitleTxt').text("Problem with adding product");
+      $('#infoBodyTxt').text(error);
+      $('#infoModal').modal('show');
+    }
+    App.reloadProducts();
+  },
+
+  buyProduct: async () => {
+    event.preventDefault();
+    // get values from event
+    let _productId = $(event.target).data('id');
+    const _prodPriceValue = parseFloat($(event.target).data('value'));
+    const _prodPrePrice = isNaN(_prodPriceValue) ? "0" : _prodPriceValue.toString();
+    const _prodPrice = window.web3.utils.toWei(_prodPrePrice, "ether");
+    const _storesId = $(event.target).data('storeId')
+    try {
+      const onlineMPinstance = await App.contracts.OnlineMP.deployed();
+      const transactionReceipt = await onlineMPinstance.buyProduct(
+        _productId, {
+          from: App.account,
+          value: _prodPrice,
+          gas: 500000
+        }
+      ).on("transactionHash", hash => {
+        console.log("transaction hash", hash);
+      }); 
+      console.log("transaction receipt", transactionReceipt);
+    } catch(error) {
+      console.log(error);
+      $('#events').append(error);
+      $('#infoTitleTxt').text("Problem with purchase");
+      $('#infoBodyTxt').text(error);
+      $('#infoModal').modal('show');
     }
   },
 
@@ -377,7 +457,7 @@ App = {
 };
 
 $(function() {
-  $(window).load(function() {
+  $(window).on('load', function() {
        App.init().then(App.updateAccountInfo());
   });
 });

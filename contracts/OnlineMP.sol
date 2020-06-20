@@ -54,34 +54,24 @@ contract OnlineMP is Ownable {
      *  @notice A Product: 
      *  @param Product id: @prodId
      *  @param Product name: @prodName
-     *  @param Product desc: @prodDescription
+     *  @param Product desc: @prodDesc
      *  @param Product price: @prodPrice
-     *  @param Product purchaser: purchaser
+     *  @param Product purchaser: @purchaser
+     *  @param Product owner: @prodOwner
      *  @param Product id of store it belongs to
      */
     struct Product {
         uint prodId;
         string prodName;
-        string prodDescription;
+        string prodDesc;
         uint256 prodPrice;
-        address payable purchaser;
+        address purchaser;
+        address payable prodOwner;
         uint storeIdp;
     }
 
     mapping(uint => Product) public products; 
     uint prodCounter;
-
-    /**
-     *  @notice LogAddStore should provide info about the store ID, store owner and store name
-     *  @param _storeId the store id
-     *  @param _storeOwner the store owner
-     *  @param _storeName the store name
-     */
-    event LogAddStore(
-        uint indexed _storeId,
-        address indexed _storeOwner,
-        string _storeName  
-    );
 
     /**
         LogSelectStore should provide info about the store selected
@@ -96,40 +86,53 @@ contract OnlineMP is Ownable {
     */
 
     /**
+     *  @notice LogAddStore should provide info about the store ID, store owner and store name
+     *  @param _storeIdp the store id
+     *  @param _storeOwner the store owner
+     *  @param _storeName the store name
+     */
+    event LogAddStore(
+        uint indexed _storeIdp,
+        address indexed _storeOwner,
+        string _storeName  
+    );
+
+    /**
      *  @notice LogAddProduct should provide info about product ID, name, desc and price
      *  @param _prodId the product id
      *  @param _prodName the product name
-     *  @param _prodDescription the product description
+     *  @param _prodDesc the product description
      *  @param _prodPrice the product price
-     *  @param _storeIdp the id of the store this product belongs to
+     *  @param _storesId the id of the store this product belongs to
      */
     event LogAddProduct(
         uint indexed _prodId,
         string _prodName,
-        string _prodDescription,
+        string _prodDesc,
         uint256 _prodPrice,
-        uint _storeIdp
-    );
-
-
-    /**
-     *  @notice LogSellProduct should provide info about the product ID, seller (store owner), product name and price
-     */
-    event LogSellProduct(
-        uint indexed _storeID,
-        address indexed _storeOwner,
-        string  indexed _productName,
-        uint256 _price
+        uint indexed _storesId
     );
 
     /**
      *  @notice LogBuyTickets should provide info about prod ID, seller (store owner), purchaser, prod name and prod price
      */ 
     event LogBuyProduct(
-        uint indexed _productId,
+        uint indexed _prodId,
+        address indexed _prodOwner,
         address indexed _purchaser,
-        string  indexed _productName,
-        uint256 _price
+        string  _prodName,
+        uint256 _prodPrice,
+        uint _storeIdp
+    );
+
+    /**
+     *  @notice LogSellProduct should provide info about the product ID, seller (store owner), product name and price
+     */
+    event LogSellProduct(
+        uint indexed _storeIDp,
+        address indexed _storeOwner,
+        string  _prodName,
+        uint256 _prodPrice
     );
 
     /**
@@ -170,7 +173,7 @@ contract OnlineMP is Ownable {
     modifier isStoreOwner(address _isStoreOwner) {
         require(
             isStoreOwners[_isStoreOwner],
-            "Only a store owner can call ths function."
+            "Only a store owner can call this function."
         );
         _;
     }
@@ -181,11 +184,22 @@ contract OnlineMP is Ownable {
     modifier onlyStoreOwner(address _onlyStoreOwner) {
         require(
             isStoreOwners[_onlyStoreOwner] && stores[storeCounter].storeOwner == _onlyStoreOwner,
-            "Only the store owner can call ths function."
+            "Only the store owner can call this function."
         );
         _;
     }
 
+    /**
+     *  @notice Create a modifier that throws an error if the address is storeOwner of the store
+     */
+    modifier notOnlyStoreOwner(address _notOnlyStoreOwner) {
+        require(
+            !(isStoreOwners[_notOnlyStoreOwner] && stores[storeCounter].storeOwner == _notOnlyStoreOwner),
+            "Cannot be the store owner to call this function."
+        );
+        _;
+    }
+    
     /** 
      *  @notice Calling the Ownable constructor to insure that the address deploying this contract is 
      *  regsitered as owner and to set owner as an admin
@@ -269,27 +283,21 @@ contract OnlineMP is Ownable {
      *  @notice This function adds a product
      *  @dev the prodcut id is derived from the counter
      *  @param _prodName the product name
-     *  @param _prodDescription the product description
+     *  @param _prodDesc the product description
      *  @param _prodPrice the product price
+     *  @param _storesId the id of the store for this product
      *  @dev the store id of which the product is listed 
      */
     function addProduct(
         string memory _prodName,
-        string memory _prodDescription,
-        uint _prodPrice
+        string memory _prodDesc,
+        uint _prodPrice,
+        uint _storesId
     )
         public
         onlyStoreOwner(_msgSender())
     {
-    
-        /*
-          require(
-              products[prodCounter].purchaser == 
-              product.purchaser == address(0),
-              "The product should not have been sold yet"
-          );
-        */
-
+      
         prodCounter++;
     
         /**
@@ -298,16 +306,17 @@ contract OnlineMP is Ownable {
         products[prodCounter] = Product(
             prodCounter,
             _prodName,
-            _prodDescription,
+            _prodDesc,
             _prodPrice,
-            msg.sender,
-            storeCounter
+            address(0),
+            address(0),
+            _storesId
         );
 
-        stores[storeCounter].storeProducts.push(prodCounter);
+        stores[_storesId].storeProducts.push(prodCounter);
         storeProdCounter++;
 
-        emit LogAddProduct(prodCounter, _prodName, _prodDescription, _prodPrice, storeIdp);
+        emit LogAddProduct(prodCounter, _prodName, _prodDesc, _prodPrice, _storesId);
     }
 
     /**
@@ -418,7 +427,7 @@ contract OnlineMP is Ownable {
          *  @notice Collect IDs of products still for available for sale
          */
         for (uint i = 1; i <= prodCounter; i++) {
-            if (products[i].purchaser != address(0)) {
+            if (products[i].purchaser == address(0)) {
                 productIds[numberOfProductsForSale] = products[i].prodId;
                 numberOfProductsForSale++;
             }
@@ -509,7 +518,7 @@ contract OnlineMP is Ownable {
           return (
               products[_prodId].prodId,
               products[_prodId].prodName,
-              products[_prodId].prodDescription,
+              products[_prodId].prodDesc,
               products[_prodId].prodPrice,
               products[_prodId].purchaser
         );
@@ -517,11 +526,12 @@ contract OnlineMP is Ownable {
 
     /**
      *  @notice This function buys a product from store:
-     *  @param _productId the product id
+     *  @param _prodId the product id
      */
-    function buyProduct(uint _productId)
+    function buyProduct(uint _prodId)
         public
         payable
+        notOnlyStoreOwner(_msgSender())
     {
         require(
             prodCounter > 0,
@@ -529,30 +539,35 @@ contract OnlineMP is Ownable {
         );
 
         require(
-            _productId > 0 && _productId <= prodCounter,
+            _prodId > 0 && _prodId <= prodCounter,
             "The product should exists"
         );
 
         /**
          * @notice retrieve product
          */
-        Product storage btproduct = products[_productId];
+        Product storage btproduct = products[_prodId];
 
+        /**
+         *  @notice retrieve the storeId
+         
+        uint tstore = products[_productId].storeIdp;
+        */
         require(
             storeProdCounter > 0,
             "There should be at least one product in the store"
         );
 
         require(
+            btproduct.purchaser != btproduct.prodOwner,
+            "The product owner cannot buy his own product"
+        );
+        
+        require(
             btproduct.purchaser == address(0),
             "The product should not have been sold yet"
         );
-     
-        require(
-            btproduct.purchaser != msg.sender,
-            "The store owner should not be allowed to buy their own products"
-         );
-  
+        
         require(
             btproduct.prodPrice == msg.value,
             "The msg.value does not match product price"
@@ -564,18 +579,27 @@ contract OnlineMP is Ownable {
         btproduct.purchaser = _msgSender();
 
         /**
-         *  @notice purchaser ma es purchase avoid re-entrancy here
+         *  @notice purchaser makes purchase avoid re-entrancy here
          */
-        btproduct.purchaser.transfer(msg.value); 
+        btproduct.prodOwner.transfer(msg.value);
 
+        /**
+         *  @notice decrement product counters
+         
+        delete stores[btstore].storeProducts[_productId];
+        prodCounter--;
+        storeProdCounter--;
+        */ 
         /**
          *  @notice emit LogBuyProduct event
          */
         emit LogBuyProduct(
-            _productId,
+            _prodId,
+            btproduct.prodOwner,
             btproduct.purchaser,
             btproduct.prodName,
-            btproduct.prodPrice
+            btproduct.prodPrice,
+            btproduct.storeIdp
         );
     }
 
