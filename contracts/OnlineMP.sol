@@ -46,7 +46,7 @@ contract OnlineMP is Ownable {
     uint storeCounter;
     
     /**
-     *  @notice store the stores product count (public for getter())
+     *  @dev store the stores product count (public for getter())
      */
     uint storeProdCounter;
 
@@ -57,6 +57,7 @@ contract OnlineMP is Ownable {
      *  @param Product desc: @prodDesc
      *  @param Product price: @prodPrice
      *  @param Product owner: @prodOwner
+     *  @param Product purchaser: @prodPurchaser
      *  @param Product id of store it belongs to
      */
     struct Product {
@@ -65,6 +66,7 @@ contract OnlineMP is Ownable {
         string prodDesc;
         uint256 prodPrice;
         address payable prodOwner;
+        address prodPurchaser;
         uint storeIdp;
     }
 
@@ -305,6 +307,7 @@ contract OnlineMP is Ownable {
             _prodName,
             _prodDesc,
             _prodPrice,
+            _msgSender(),
             address(0),
             _storesId
         );
@@ -423,7 +426,7 @@ contract OnlineMP is Ownable {
          *  @notice Collect IDs of products still for available for sale
          */
         for (uint i = 1; i <= prodCounter; i++) {
-            if (products[i].prodOwner == address(0)) {
+            if (products[i].prodPurchaser == address(0)) {
                 productIds[numberOfProductsForSale] = products[i].prodId;
                 numberOfProductsForSale++;
             }
@@ -543,7 +546,6 @@ contract OnlineMP is Ownable {
          * @notice retrieve product
          */
         Product storage btproduct = products[_prodId];
-        Store storage stproduct = 
 
         /**
          *  @notice retrieve the storeId
@@ -561,7 +563,7 @@ contract OnlineMP is Ownable {
         );
         
         require(
-            btproduct.prodOwner == address(0),
+            btproduct.prodPurchaser == address(0),
             "The product should not have been sold yet"
         );
         
@@ -573,13 +575,17 @@ contract OnlineMP is Ownable {
         /**
          *  @notice update purchaser
          */
-        btproduct.prodOwner = _msgSender();
+        btproduct.prodPurchaser = _msgSender();
 
         /**
          *  @notice purchaser makes purchase avoid re-entrancy here
          */
         btproduct.prodOwner.transfer(msg.value);
 
+        /**
+         *  @notice purchaser is now owner
+         */
+         btproduct.prodOwner = _msgSender();
         /**
          *  @notice decrement product counters
          

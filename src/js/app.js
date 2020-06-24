@@ -387,7 +387,7 @@ App = {
       $('#productsRow').empty();
       for (let i = 0; i < productIds.length; i++) {
         const product = await onlineMPInstance.products(productIds[i]);
-        App.displayProduct(product[0], product[1], product[2], product[3], product[4], product[5]);
+        App.displayProduct(product[0], product[1], product[2], product[3], product[4], product[5], product[6]);
       }
       App.loading = false;
     } catch (error) {
@@ -424,7 +424,7 @@ App = {
     storesRow.append(storesTemplate.html());
   },
 
-  displayProduct: (prodId, prodName, prodDescription, prodPrice, prodOwner, storeIdp) => {
+  displayProduct: (prodId, prodName, prodDescription, prodPrice, prodOwner, prodPurchaser, storeIdp) => {
     const productsRow = $('#productsRow');
     const etherProdPrice = web3.utils.fromWei(prodPrice, "ether");
     const productsTemplate = $('#productsTemplate');
@@ -434,6 +434,7 @@ App = {
     productsTemplate.find('.product-desc').text(prodDescription)
     productsTemplate.find('.product-price').text(etherProdPrice + " ETH");
     productsTemplate.find('.product-owner').text(prodOwner.slice(0,6) + "...." + prodOwner.slice(-4));
+    productsTemplate.find('.product-purchaser').text(prodPurchaser.slice(0,6) + "...." + prodOwner.slice(-4));
     productsTemplate.find('.product-storesId').text(storeIdp);
     productsTemplate.find('.btn-buy').attr('data-id', prodId);
     productsTemplate.find('.btn-buy').attr('data-value', etherProdPrice);
