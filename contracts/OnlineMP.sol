@@ -495,7 +495,7 @@ contract OnlineMP is Ownable {
      *  @return product's prodId
      *  @return product's prodName
      *  @return product's prodDescription
-     *  @return product's productPrice
+     *  @return productage's productPrice
      *  @return product's storeIdp
      */
     function selectProduct(uint _prodId)
@@ -542,16 +542,8 @@ contract OnlineMP is Ownable {
             "The product should exists"
         );
 
-        /**
-         * @notice retrieve product
-         */
         Product storage btproduct = products[_prodId];
-
-        /**
-         *  @notice retrieve the storeId
-         
-        uint tstore = products[_productId].storeIdp;
-        */
+        
         require(
             storeProdCounter > 0,
             "There should be at least one product in the store"
@@ -577,22 +569,24 @@ contract OnlineMP is Ownable {
          */
         btproduct.prodPurchaser = _msgSender();
 
+        stores[btproduct.storeIdp].storeBal -= msg.value;
+
         /**
          *  @notice purchaser makes purchase avoid re-entrancy here
          */
         btproduct.prodOwner.transfer(msg.value);
-
         /**
          *  @notice purchaser is now owner
          */
          btproduct.prodOwner = _msgSender();
+        
         /**
          *  @notice decrement product counters
-         
-        delete stores[btstore].storeProducts[_productId];
+         */ 
+        delete stores[btproduct.storeIdp].storeProducts[_prodId];
         prodCounter--;
         storeProdCounter--;
-        */ 
+    
         /**
          *  @notice emit LogBuyProduct event
          */

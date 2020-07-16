@@ -1,73 +1,68 @@
 // The public file for automated testing...
 
-let OnlineMP = artifacts.require('OnlineMP')
-let catchRevert = require("./exceptionsHelpers.js").catchRevert
+//import { catchRevert } from "./exceptionsHelpers.js"
 const BN = web3.utils.BN
+let OnlineMP = artifacts.require('./OnlineMP.sol')
 
 contract('OnlineMP', function(accounts) {
-
-    const firstAccount = accounts[0]
-    const secondAccount = accounts[1]
-    const thirdAccount = accounts[2]
-
-    const DefaultStoreName = "Default Store Name"
-    const zeroValue = 0
-    const oneValue = 1
-    const zeroProducts = ""
-
-    let instance
+    let mpAdmin = accounts[0];
+    let storeOwner = accounts[1];
+    let purchaser = accounts[2];
+    let store1 = "Store1";
+    let product1 = "Product1";
+    let prod1desc = "Product1description";
+    let zeroValue = 0;
+    let oneValue = 1;
 
     beforeEach(async () => {
-        instance = await OnlineMP.new(DefaultStoreName, firstAccount)
+        instance = await OnlineMP.new();
     })
+
 
     describe("Setup", async() => {
 
         it("Owner should be set to the deploying address", async() => {
-            const owner = await instance.owner()
-            assert.equal(owner, firstAccount, "the deploying address should be the owner")
+            const owner = await instance.owner();
+            assert.equal(owner, accounts[0], "the deploying address should be the owner");
         })
 
-        it("Owner should be set as the default storeOwner address", async() => {
-            const owner = await instance.owner()
-            assert.equal(owner, firstAccount, "the storeOwner address should be the owner address")
+        it("Owner should be set as the default mpAdmin", async() => {
+            const owner = await instance.owner();
+            assert.equal(owner, mpAdmin, "the mpAdmin should be the owner address");
         })
 
-        it("One store should have been created", async() => {
-            const storeCountDetail = await instance.getNumberOfStores()
-            assert.equal(storeCountDetail, 1, "the store counter should be equal to one")
+        it("No store should have been created", async() => {
+            const storeCountDetail = await instance.getNumberOfStores();
+            assert.equal(storeCountDetail, 0, "the store counter should be equal to zero");
+        })
+
+        it("No products should have been created", async() => {
+            const productCountDetail = await instance.getNumberOfProducts();
+            assert.equal(productCountDetail, zeroValue, "the product counter should be equal to zero");
         })
 
     })
 
     describe("Functions", () => {
 
-        it("'Default store name' should be set as the store name, this account is not owner", async() => {
-            const storeNameDetail = await instance.addStore(DefaultStoreName, secondAccount)
-            const owner = await instance.owner()
-            assert.equal("Default Store Name", DefaultStoreName, "Default Store name should be the set")
-            assert.notEqual(secondAccount, owner, "The second account is not the owner")
+        it("Owner should be able to add a Store owner", async() => {
+            const receipt = await instance.addStoreOwner(storeOwner);
+            assert.equal(receipt.logs.length, 1, "one event should have been emitted");
+            assert.equal(receipt.logs[0].event, "LogAddStoreOwner", "the event should be LogAddStoreOwner");
+            assert.equal(receipt.logs[0].args._newStoreOwner, storeOwner, "the store owner should be " 
+            + storeOwner);
+        }) 
+
+        
+        it("Store should be created", async() => {
+            const owner = await instance.owner();
+            const newStoreOwner = await instance.addStoreOwner(mpAdmin, { from: owner });
+            const receipt = await instance.addStore("Store1", { from: mpAdmin });
+            assert.equal(receipt.logs.length, 1, "one event should have been emitted");
+            assert.equal(receipt.logs[0].event, "LogAddStore", "the event should be LogAddStore");
+            assert.equal(receipt.logs[0].args._storeName, store1, "the store name should be " 
+            + store1);
         })
-      /*
-      it("selectStore(1) should return store ID 1", async() => {
-          const selectDetail = await instance.selectStore(1)
-
-          assert.equal(stores[1].storeID, oneValue, "the storeId should be equal to one")
-      })
-
-
-
-      it("Default store balance should be 0", async() => {
-          const storeBalDetail = await OnlineMP.new("Default Store name", firstAccount)
-          assert.equal(storeBalDetail.storeBal, 0, "the store balance should be zero")
-      })
-
-      it("it should let us add a store", async() => {
-        const instance = await OnlineMP.new(DefaultStoreName, firstAc)
-        const nameCheck = await instance.addStore()
-        assert.equal(nameCheck.stores[storeId].storeName, DefaultStoreName, "the Store names should match")
-        //assert.equal(event.sales, 0, "the ticket sales should be 0")
-      })
-      */
+        
     })
 })
