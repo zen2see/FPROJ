@@ -27,6 +27,6 @@
     "tunnel-agent-fix": "0.0.1"
   },
   "devDependencies": {
-    "@openzeppelin/contracts": "^3.0.1"
+    "@openzeppelin/contracts": "^4.4.2"
   }
 }
